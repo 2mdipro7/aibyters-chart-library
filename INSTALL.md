@@ -27,8 +27,8 @@ This gets the component explorer running locally so you can browse all 50+ chart
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/aibyters.git
-cd aibyters
+git clone https://github.com/2mdipro7/aibyters-chart-library.git
+cd aibyters-chart-library
 
 # 2. Install all workspace dependencies
 pnpm install
@@ -74,7 +74,7 @@ If your project is already a monorepo, add the `aibyters` packages to your `pnpm
 packages:
   - 'packages/*'
   - 'apps/*'
-  - '../aibyters/packages/*'   # point to the cloned repo
+  - '../aibyters-chart-library/packages/*'   # point to the cloned repo
 ```
 
 Then reference them in your `vite.config.ts`:
@@ -86,15 +86,15 @@ import path from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@aibyters/charts-bi':      path.resolve(__dirname, '../aibyters/packages/charts-bi/src/index.ts'),
-      '@aibyters/charts-kpi':     path.resolve(__dirname, '../aibyters/packages/charts-kpi/src/index.ts'),
-      '@aibyters/charts-ds':      path.resolve(__dirname, '../aibyters/packages/charts-ds/src/index.ts'),
-      '@aibyters/charts-geo':     path.resolve(__dirname, '../aibyters/packages/charts-geo/src/index.ts'),
-      '@aibyters/charts-network': path.resolve(__dirname, '../aibyters/packages/charts-network/src/index.ts'),
-      '@aibyters/charts-ai':      path.resolve(__dirname, '../aibyters/packages/charts-ai/src/index.ts'),
-      '@aibyters/layout':         path.resolve(__dirname, '../aibyters/packages/layout/src/index.ts'),
-      '@aibyters/spec':           path.resolve(__dirname, '../aibyters/packages/spec/src/index.ts'),
-      '@aibyters/theme':          path.resolve(__dirname, '../aibyters/packages/theme/src/index.ts'),
+      '@aibyters/charts-bi':      path.resolve(__dirname, '../aibyters-chart-library/packages/charts-bi/src/index.ts'),
+      '@aibyters/charts-kpi':     path.resolve(__dirname, '../aibyters-chart-library/packages/charts-kpi/src/index.ts'),
+      '@aibyters/charts-ds':      path.resolve(__dirname, '../aibyters-chart-library/packages/charts-ds/src/index.ts'),
+      '@aibyters/charts-geo':     path.resolve(__dirname, '../aibyters-chart-library/packages/charts-geo/src/index.ts'),
+      '@aibyters/charts-network': path.resolve(__dirname, '../aibyters-chart-library/packages/charts-network/src/index.ts'),
+      '@aibyters/charts-ai':      path.resolve(__dirname, '../aibyters-chart-library/packages/charts-ai/src/index.ts'),
+      '@aibyters/layout':         path.resolve(__dirname, '../aibyters-chart-library/packages/layout/src/index.ts'),
+      '@aibyters/spec':           path.resolve(__dirname, '../aibyters-chart-library/packages/spec/src/index.ts'),
+      '@aibyters/theme':          path.resolve(__dirname, '../aibyters-chart-library/packages/theme/src/index.ts'),
     },
   },
 });
@@ -105,12 +105,12 @@ export default defineConfig({
 Build the packages first, then link them:
 
 ```bash
-# Inside the aibyters repo root
+# Inside the aibyters-chart-library repo root
 cd packages/charts-bi
 pnpm run build
 
 # Then in your app
-pnpm link ../aibyters/packages/charts-bi
+pnpm link ../aibyters-chart-library/packages/charts-bi
 ```
 
 ---
@@ -344,7 +344,7 @@ import type { ChoroplethMapProps } from '@aibyters/charts-geo';
 ## Project Structure Reference
 
 ```
-aibyters/
+aibyters-chart-library/
 ├── apps/
 │   └── playground/          # Visual component explorer (run with pnpm dev)
 └── packages/

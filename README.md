@@ -15,6 +15,10 @@ We have successfully built out **48 visualization components** across 6 core cat
 - **Network (3)**: Network Graph, Dependency Tree, Chord Diagram
 - **AI Intelligence (2)**: Insight Card, Recommendation Card
 
+### Integration Guide
+
+For full instructions on how to install and integrate these components into your own React projects, please read the **[Installation Guide (INSTALL.md)](./INSTALL.md)**.
+
 ### Local Development
 
 To run the local playground and view the entire component catalog:
