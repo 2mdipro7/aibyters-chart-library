@@ -1,0 +1,58 @@
+.vi-theme-root {
+  /* Box sizing rules */
+  box-sizing: border-box;
+}
+
+.vi-theme-root *,
+.vi-theme-root *::before,
+.vi-theme-root *::after {
+  box-sizing: inherit;
+}
+
+.vi-theme-root {
+  font-family: var(--vi-font-body);
+  color: var(--vi-color-text-primary);
+  background-color: var(--vi-color-surface-background);
+  font-size: var(--vi-text-base);
+  line-height: var(--vi-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings */
+.vi-theme-root h1, 
+.vi-theme-root h2, 
+.vi-theme-root h3, 
+.vi-theme-root h4, 
+.vi-theme-root h5, 
+.vi-theme-root h6 {
+  font-family: var(--vi-font-heading);
+  margin: 0;
+  font-weight: var(--vi-weight-semibold);
+  color: var(--vi-color-text-primary);
+}
+
+/* Scrollbars */
+.vi-theme-root ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.vi-theme-root ::-webkit-scrollbar-track {
+  background: var(--vi-color-surface-background);
+}
+
+.vi-theme-root ::-webkit-scrollbar-thumb {
+  background: var(--vi-color-surface-borderLight);
+  border-radius: var(--vi-radius-full);
+}
+
+.vi-theme-root ::-webkit-scrollbar-thumb:hover {
+  background: var(--vi-color-surface-border);
+}
+
+/* Focus Rings */
+.vi-theme-root *:focus-visible {
+  outline: 2px solid var(--vi-color-accent-500);
+  outline-offset: 2px;
+}

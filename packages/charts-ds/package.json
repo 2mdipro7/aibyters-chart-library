@@ -1,0 +1,40 @@
+{
+  "name": "@aibyters/charts-ds",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rimraf dist"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@aibyters/spec": "workspace:*",
+    "@aibyters/core": "workspace:*",
+    "@aibyters/layout": "workspace:*",
+    "@aibyters/charts-bi": "workspace:*",
+    "recharts": "^2.12.7",
+    "lucide-react": "^0.378.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.8",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0"
+  }
+}

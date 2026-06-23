@@ -1,0 +1,12 @@
+node_modules
+.DS_Store
+dist
+dist-tsc
+*.local
+.env
+.env.*
+!.env.example
+coverage
+.cache
+.vite
+.turbo

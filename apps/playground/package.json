@@ -1,0 +1,37 @@
+{
+  "name": "playground",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "vite": "^5.2.11"
+  },
+  "dependencies": {
+    "@aibyters/charts-ai": "workspace:*",
+    "@aibyters/charts-bi": "workspace:*",
+    "@aibyters/charts-ds": "workspace:*",
+    "@aibyters/charts-geo": "workspace:*",
+    "@aibyters/charts-kpi": "workspace:*",
+    "@aibyters/charts-network": "workspace:*",
+    "@aibyters/layout": "workspace:*",
+    "@aibyters/spec": "workspace:*",
+    "@aibyters/theme": "workspace:*",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.2.6",
+    "lucide-react": "^0.379.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.1",
+    "recharts": "^2.12.7",
+    "tailwind-merge": "^2.3.0"
+  }
+}

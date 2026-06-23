@@ -1,0 +1,67 @@
+export const colors = {
+  // === NEUTRAL BASE PALETTE (Slate) ===
+  slate: {
+    50: "#f8fafc",
+    100: "#f1f5f9",
+    200: "#e2e8f0",
+    300: "#cbd5e1",
+    400: "#94a3b8",
+    500: "#64748b",
+    600: "#475569",
+    700: "#334155",
+    800: "#1e293b",
+    900: "#0f172a",
+    950: "#020617",
+  },
+
+  // === ACCENT PALETTE (Indigo — professional, neutral) ===
+  accent: {
+    50: "#eef2ff",
+    100: "#e0e7ff",
+    200: "#c7d2fe",
+    300: "#a5b4fc",
+    400: "#818cf8",
+    500: "#6366f1",
+    600: "#4f46e5",
+    700: "#4338ca",
+    800: "#3730a3",
+    900: "#312e81",
+  },
+
+  // === SEMANTIC COLORS ===
+  positive: { light: "#dcfce7", main: "#22c55e", dark: "#166534" },
+  warning: { light: "#fef9c3", main: "#eab308", dark: "#854d0e" },
+  critical: { light: "#fee2e2", main: "#ef4444", dark: "#991b1b" },
+  info: { light: "#dbeafe", main: "#3b82f6", dark: "#1e40af" },
+
+  // === CHART PALETTE (8-color accessible) ===
+  chart: [
+    "#6366f1", // indigo
+    "#06b6d4", // cyan
+    "#22c55e", // green
+    "#f59e0b", // amber
+    "#ef4444", // red
+    "#a855f7", // purple
+    "#ec4899", // pink
+    "#14b8a6", // teal
+  ],
+
+  // === SURFACE (Dark theme default mapping source) ===
+  surface: {
+    background: "#0f172a", // slate-900
+    elevated: "#1e293b", // slate-800
+    card: "#1e293b", // slate-800
+    cardHover: "#334155", // slate-700
+    border: "#334155", // slate-700
+    borderLight: "#475569", // slate-600
+    overlay: "rgba(0,0,0,0.6)",
+  },
+
+  // === TEXT ===
+  text: {
+    primary: "#f8fafc", // slate-50
+    secondary: "#94a3b8", // slate-400
+    muted: "#64748b", // slate-500
+    inverse: "#0f172a", // slate-900
+  },
+} as const;
