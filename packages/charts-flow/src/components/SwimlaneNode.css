@@ -1,0 +1,88 @@
+/* ------------------------------------------------------------------ */
+/*  SwimlaneNode – full-width background row container                 */
+/* ------------------------------------------------------------------ */
+
+.flow-swimlane-node {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  min-height: 180px;
+  border: 1.5px dashed var(--flow-swimlane-border, rgba(100, 120, 140, 0.25));
+  border-radius: 6px;
+  background: var(--flow-swimlane-bg, rgba(100, 120, 140, 0.06));
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- Left header strip ---- */
+.flow-swimlane-node__header {
+  width: 90px;
+  min-width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--flow-swimlane-strip, #6B7D8E);
+  border-radius: 4px 0 0 4px;
+  padding: 12px 4px;
+}
+
+.flow-swimlane-node__label-wrap {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  text-align: center;
+}
+
+.flow-swimlane-node__label {
+  margin: 0;
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 0.5px;
+}
+
+.flow-swimlane-node__subtitle {
+  margin: 6px 0 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ---- Body area ---- */
+.flow-swimlane-node__body {
+  flex: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Row variants                                                       */
+/* ------------------------------------------------------------------ */
+
+.flow-swimlane-node--row1 {
+  --flow-swimlane-bg: rgba(180, 160, 130, 0.08);
+  --flow-swimlane-border: rgba(139, 115, 85, 0.25);
+  --flow-swimlane-strip: #8B7355;
+}
+
+.flow-swimlane-node--row2 {
+  --flow-swimlane-bg: rgba(150, 130, 180, 0.08);
+  --flow-swimlane-border: rgba(123, 104, 174, 0.25);
+  --flow-swimlane-strip: #7B68AE;
+}
+
+.flow-swimlane-node--row3 {
+  --flow-swimlane-bg: rgba(100, 170, 160, 0.08);
+  --flow-swimlane-border: rgba(90, 158, 148, 0.25);
+  --flow-swimlane-strip: #5A9E94;
+}
+
+.flow-swimlane-node--row4 {
+  --flow-swimlane-bg: rgba(200, 170, 100, 0.08);
+  --flow-swimlane-border: rgba(184, 155, 74, 0.25);
+  --flow-swimlane-strip: #B89B4A;
+}
+
+.flow-swimlane-node--row5 {
+  --flow-swimlane-bg: rgba(100, 120, 140, 0.08);
+  --flow-swimlane-border: rgba(107, 125, 142, 0.25);
+  --flow-swimlane-strip: #6B7D8E;
+}

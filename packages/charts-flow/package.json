@@ -1,0 +1,35 @@
+{
+  "name": "@aibyters/charts-flow",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "import": "./dist/index.js", "types": "./dist/index.d.ts" }
+  },
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "files": ["dist"],
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.2.11",
+    "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@aibyters/core": "workspace:*",
+    "@aibyters/theme": "workspace:*",
+    "@aibyters/tokens": "workspace:*",
+    "@xyflow/react": "^12.6.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.511.0",
+    "tailwind-merge": "^2.6.1"
+  }
+}

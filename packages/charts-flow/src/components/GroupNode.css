@@ -1,0 +1,70 @@
+/* ------------------------------------------------------------------ */
+/*  GroupNode – container with label badge                              */
+/* ------------------------------------------------------------------ */
+
+.flow-group-node {
+  position: relative;
+  min-width: 200px;
+  min-height: 120px;
+  border: 2px dashed var(--flow-group-border, #9CA3AF);
+  border-radius: 12px;
+  background: var(--flow-group-bg, rgba(156, 163, 175, 0.06));
+  padding: 32px 12px 12px;
+}
+
+/* ---- Label badge (top-left pill) ---- */
+.flow-group-node__badge {
+  position: absolute;
+  top: -12px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 12px;
+  border-radius: 20px;
+  background: var(--flow-group-badge-bg, #6B7280);
+  color: #FFFFFF;
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* ---- Subtitle (optional) ---- */
+.flow-group-node__subtitle {
+  margin: 0 0 8px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 10px;
+  color: var(--flow-group-text, #6B7280);
+  opacity: 0.8;
+}
+
+/* ---- Loop icon indicator ---- */
+.flow-group-node__loop-icon {
+  display: inline-block;
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variants                                                           */
+/* ------------------------------------------------------------------ */
+
+/* default – gray dashed (already set) */
+
+.flow-group-node--loop {
+  --flow-group-border: #B89B4A;
+  --flow-group-bg: rgba(184, 155, 74, 0.06);
+  --flow-group-badge-bg: #B89B4A;
+  --flow-group-text: #8B7355;
+  border-style: dashed;
+}
+
+.flow-group-node--parallel {
+  --flow-group-border: #7B68AE;
+  --flow-group-bg: rgba(123, 104, 174, 0.06);
+  --flow-group-badge-bg: #7B68AE;
+  --flow-group-text: #7B68AE;
+  border-style: solid;
+}

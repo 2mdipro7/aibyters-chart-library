@@ -22,6 +22,8 @@
     "@aibyters/charts-geo": "workspace:*",
     "@aibyters/charts-kpi": "workspace:*",
     "@aibyters/charts-network": "workspace:*",
+    "@aibyters/charts-flow": "workspace:*",
+    "@aibyters/charts-infographics": "workspace:*",
     "@aibyters/layout": "workspace:*",
     "@aibyters/spec": "workspace:*",
     "@aibyters/theme": "workspace:*",

@@ -12,6 +12,8 @@ export default defineConfig({
       '@aibyters/charts-ai': path.resolve(__dirname, '../../packages/charts-ai/src/index.ts'),
       '@aibyters/charts-geo': path.resolve(__dirname, '../../packages/charts-geo/src/index.ts'),
       '@aibyters/charts-network': path.resolve(__dirname, '../../packages/charts-network/src/index.ts'),
+      '@aibyters/charts-flow': path.resolve(__dirname, '../../packages/charts-flow/src/index.ts'),
+      '@aibyters/charts-infographics': path.resolve(__dirname, '../../packages/charts-infographics/src/index.ts'),
       '@aibyters/layout': path.resolve(__dirname, '../../packages/layout/src/index.ts'),
       '@aibyters/spec': path.resolve(__dirname, '../../packages/spec/src/index.ts'),
       '@aibyters/core': path.resolve(__dirname, '../../packages/core/src/index.ts'),

@@ -1,0 +1,82 @@
+/* ------------------------------------------------------------------ */
+/*  DocumentNode – rectangle with folded corner                        */
+/* ------------------------------------------------------------------ */
+
+.flow-document-node {
+  position: relative;
+  min-width: 170px;
+  max-width: 260px;
+  padding: 12px 16px;
+  background: var(--flow-doc-bg, #FFFFFF);
+  color: var(--flow-doc-color, #10261A);
+  border: 1.5px solid var(--flow-doc-border, #DEE4E1);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.4;
+  /* Folded corner effect */
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+  transition: box-shadow 0.15s ease;
+}
+
+.flow-document-node:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Folded corner triangle overlay */
+.flow-document-node::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: var(--flow-doc-fold, #DEE4E1);
+  clip-path: polygon(0 0, 100% 100%, 100% 0);
+  opacity: 0.6;
+}
+
+/* ---- Label ---- */
+.flow-document-node__label {
+  margin: 0;
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* ---- Items list ---- */
+.flow-document-node__items {
+  margin: 6px 0 0;
+  padding: 0 0 0 16px;
+  font-size: 11px;
+  list-style: disc;
+  opacity: 0.85;
+}
+
+.flow-document-node__items li {
+  margin-bottom: 1px;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variants                                                           */
+/* ------------------------------------------------------------------ */
+
+/* default – white with soft border (set via custom props) */
+
+.flow-document-node--primary {
+  --flow-doc-border: #009B57;
+  --flow-doc-fold: #009B57;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Handles                                                            */
+/* ------------------------------------------------------------------ */
+
+.flow-document-node .react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background: #009B57;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+}

@@ -1,0 +1,74 @@
+/* ------------------------------------------------------------------ */
+/*  StartEndNode – pill / stadium-shaped terminators                    */
+/* ------------------------------------------------------------------ */
+
+.flow-start-end-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 24px;
+  border-radius: 50px;
+  background: var(--flow-se-bg, #D4A843);
+  color: var(--flow-se-color, #10261A);
+  border: 2px solid var(--flow-se-border, transparent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: box-shadow 0.15s ease;
+}
+
+.flow-start-end-node:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+.flow-start-end-node__label {
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variants                                                           */
+/* ------------------------------------------------------------------ */
+
+/* start – amber / gold (default values already set) */
+.flow-start-end-node--start {
+  --flow-se-bg: #D4A843;
+  --flow-se-color: #10261A;
+  --flow-se-border: #BF9530;
+}
+
+/* end – Decision Green */
+.flow-start-end-node--end {
+  --flow-se-bg: #009B57;
+  --flow-se-color: #FFFFFF;
+  --flow-se-border: #009B57;
+}
+
+/* end-negative – Legacy Red */
+.flow-start-end-node--end-negative {
+  --flow-se-bg: #A30A0C;
+  --flow-se-color: #FFFFFF;
+  --flow-se-border: #A30A0C;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Handles                                                            */
+/* ------------------------------------------------------------------ */
+
+.flow-start-end-node .react-flow__handle {
+  width: 8px;
+  height: 8px;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+}
+
+.flow-start-end-node--start .react-flow__handle {
+  background: #D4A843;
+}
+
+.flow-start-end-node--end .react-flow__handle,
+.flow-start-end-node--end-negative .react-flow__handle {
+  background: #009B57;
+}

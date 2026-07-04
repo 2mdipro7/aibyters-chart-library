@@ -1,7 +1,7 @@
 export interface ChartEntry {
   id: string;
   name: string;
-  category: 'kpi' | 'bi' | 'ds' | 'geo' | 'network' | 'ai';
+  category: 'kpi' | 'bi' | 'ds' | 'geo' | 'network' | 'ai' | 'flow' | 'infographics';
   path: string;
   description: string;
   status: 'implemented' | 'planned';
@@ -21,6 +21,8 @@ export const categories: CategoryInfo[] = [
   { id: 'geo', label: 'Maps', icon: '🗺️', description: 'Geographic and spatial visualizations' },
   { id: 'network', label: 'Network', icon: '🕸️', description: 'Network graphs and relationship diagrams' },
   { id: 'ai', label: 'AI Cards', icon: '🤖', description: 'AI-generated insights and recommendations' },
+  { id: 'flow', label: 'Flow Diagrams', icon: '🔄', description: 'Interactive flowcharts and process diagrams' },
+  { id: 'infographics', label: 'Infographics', icon: '🎨', description: 'Premium AI/Data story infographics' },
 ];
 
 export const chartRegistry: ChartEntry[] = [
@@ -86,6 +88,12 @@ export const chartRegistry: ChartEntry[] = [
   // AI Cards
   { id: 'insight', name: 'Insight Card', category: 'ai', path: '/ai/insight', description: 'AI-generated insight display', status: 'implemented' },
   { id: 'recommendation', name: 'Recommendation Card', category: 'ai', path: '/ai/recommendation', description: 'Actionable AI recommendation', status: 'implemented' },
+
+  // Flow Diagrams
+  { id: 'flow-diagram', name: 'Flow Diagram', category: 'flow', path: '/flow/diagram', description: 'Interactive flowchart template', status: 'implemented' },
+
+  // Infographics
+  { id: 'infographics-showcase', name: 'Infographics Showcase', category: 'infographics', path: '/infographics/showcase', description: 'Collection of premium infographics', status: 'implemented' },
 ];
 
 export function getChartsByCategory(category: string): ChartEntry[] {

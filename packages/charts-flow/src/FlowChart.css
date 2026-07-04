@@ -1,0 +1,106 @@
+/* ------------------------------------------------------------------ */
+/*  FlowChart – wrapper component styles                               */
+/* ------------------------------------------------------------------ */
+
+.flow-chart {
+  width: 100%;
+  height: 100%;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ------------------------------------------------------------------ */
+/*  React Flow overrides – brand typography & colors                   */
+/* ------------------------------------------------------------------ */
+
+.flow-chart .react-flow__attribution {
+  display: none;
+}
+
+/* ---- Background ---- */
+.flow-chart .react-flow__background {
+  background: #FAFCFB;
+}
+
+/* ---- Controls panel ---- */
+.flow-chart .react-flow__controls {
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+  border: 1px solid #DEE4E1;
+  overflow: hidden;
+}
+
+.flow-chart .react-flow__controls-button {
+  width: 28px;
+  height: 28px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #DEE4E1;
+  color: #10261A;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.flow-chart .react-flow__controls-button:hover {
+  background: #ECF8E9;
+  color: #009B57;
+}
+
+.flow-chart .react-flow__controls-button svg {
+  fill: currentColor;
+  max-width: 14px;
+  max-height: 14px;
+}
+
+/* ---- MiniMap ---- */
+.flow-chart .react-flow__minimap {
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+  border: 1px solid #DEE4E1;
+  background: #FFFFFF;
+}
+
+/* ---- Edge styling ---- */
+.flow-chart .react-flow__edge-path {
+  stroke: #4A5F52;
+  stroke-width: 1.5;
+}
+
+.flow-chart .react-flow__edge.selected .react-flow__edge-path {
+  stroke: #009B57;
+  stroke-width: 2;
+}
+
+.flow-chart .react-flow__edge-textbg {
+  fill: #FFFFFF;
+}
+
+.flow-chart .react-flow__edge-text {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  fill: #10261A;
+}
+
+/* ---- Selection box ---- */
+.flow-chart .react-flow__selection {
+  background: rgba(0, 155, 87, 0.08);
+  border: 1px dashed #009B57;
+}
+
+/* ---- Node selection ring ---- */
+.flow-chart .react-flow__node.selected {
+  box-shadow: 0 0 0 2px #009B57;
+  border-radius: 14px;
+}
+
+/* ---- Hide handles by default ---- */
+.flow-chart .react-flow__handle {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.flow-chart .react-flow__node:hover .react-flow__handle {
+  opacity: 1;
+}
+
+/* ---- Disable pointer events on swimlanes ---- */
+.flow-chart .flow-swimlane-wrapper {
+  pointer-events: none !important;
+}

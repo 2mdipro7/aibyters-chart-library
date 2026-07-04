@@ -67,6 +67,12 @@ import ChordDiagramPage from './pages/network/ChordDiagramPage';
 import InsightCardPage from './pages/ai/InsightCardPage';
 import RecommendationCardPage from './pages/ai/RecommendationCardPage';
 
+// Flow Pages
+import FlowDiagramPage from './pages/flow/FlowDiagramPage';
+
+// Infographics Pages
+import InfographicsShowcasePage from './pages/infographics/InfographicsShowcasePage';
+
 export default function App() {
   const [search, setSearch] = useState('');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -147,6 +153,12 @@ export default function App() {
               {/* AI */}
               <Route path="/ai/insight" element={<InsightCardPage />} />
               <Route path="/ai/recommendation" element={<RecommendationCardPage />} />
+
+              {/* Flow */}
+              <Route path="/flow/diagram" element={<FlowDiagramPage />} />
+
+              {/* Infographics */}
+              <Route path="/infographics/showcase" element={<InfographicsShowcasePage />} />
             </Routes>
           </div>
         </main>

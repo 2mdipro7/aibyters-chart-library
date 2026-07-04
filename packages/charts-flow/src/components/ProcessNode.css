@@ -1,0 +1,92 @@
+/* ------------------------------------------------------------------ */
+/*  ProcessNode – rounded-rectangle process step                       */
+/* ------------------------------------------------------------------ */
+
+.flow-process-node {
+  min-width: 180px;
+  max-width: 280px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1.5px solid var(--flow-process-border, #DEE4E1);
+  background: var(--flow-process-bg, #FFFFFF);
+  color: var(--flow-process-color, #10261A);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.4;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.flow-process-node:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* ---- Label ---- */
+.flow-process-node__label {
+  margin: 0;
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* ---- Subtitle ---- */
+.flow-process-node__subtitle {
+  margin: 2px 0 0;
+  font-size: 11px;
+  opacity: 0.78;
+}
+
+/* ---- Items list ---- */
+.flow-process-node__items {
+  margin: 6px 0 0;
+  padding: 0 0 0 16px;
+  font-size: 11px;
+  list-style: disc;
+  opacity: 0.85;
+}
+
+.flow-process-node__items li {
+  margin-bottom: 1px;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variants                                                           */
+/* ------------------------------------------------------------------ */
+
+/* default – already set via custom props */
+
+.flow-process-node--primary {
+  --flow-process-bg: #009B57;
+  --flow-process-color: #FFFFFF;
+  --flow-process-border: #009B57;
+}
+
+.flow-process-node--warning {
+  --flow-process-bg: #A30A0C;
+  --flow-process-color: #FFFFFF;
+  --flow-process-border: #A30A0C;
+}
+
+.flow-process-node--insight {
+  --flow-process-bg: #C5EEB5;
+  --flow-process-color: #10261A;
+  --flow-process-border: #9DD88A;
+}
+
+.flow-process-node--accent {
+  --flow-process-bg: #03481E;
+  --flow-process-color: #FFFFFF;
+  --flow-process-border: #03481E;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Handles                                                            */
+/* ------------------------------------------------------------------ */
+
+.flow-process-node .react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background: #009B57;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+}
