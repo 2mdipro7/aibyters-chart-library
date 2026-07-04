@@ -12,10 +12,5 @@
 	},
 	"scripts": {
 		"dev": "pnpm --filter playground dev"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"esbuild"
-		]
 	}
 }
