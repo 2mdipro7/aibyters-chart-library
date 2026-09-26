@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "jsx": "react-jsx",
+    "paths": {
+      "@aibyters/renderer": ["../renderer/src/index.ts"],
+      "@aibyters/spec": ["../spec/src/index.ts"],
+      "@aibyters/theme": ["../theme/src/index.ts"],
+      "@aibyters/charts-kpi": ["../charts-kpi/src/index.ts"],
+      "@aibyters/charts-bi": ["../charts-bi/src/index.ts"],
+      "@aibyters/charts-ai": ["../charts-ai/src/index.ts"],
+      "@aibyters/layout": ["../layout/src/index.ts"],
+      "@aibyters/core": ["../core/src/index.ts"],
+      "@aibyters/tokens": ["../tokens/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

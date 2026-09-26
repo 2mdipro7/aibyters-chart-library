@@ -64,6 +64,11 @@ pnpm build          # ES + CJS + d.ts for every package, topological order
 pnpm build:playground && pnpm test:visual   # screenshots at 360/768/1280 px
 ```
 
+Packages for non-React hosts:
+
+- **`packages/renderer`**: `SpecChart` draws a ChartSpec over a DataFrame with the matching component; the bridge for backends and models that answer with data plus a spec.
+- **`packages/embed`**: one script + stylesheet exposing `window.AIBytersCharts.render()` for pages that are not React (Jinja, Frappe, plain HTML).
+
 ## Licensing
 
 Proprietary — see [LICENSE](./LICENSE). Commercial terms, the licensee questionnaire and the pricing

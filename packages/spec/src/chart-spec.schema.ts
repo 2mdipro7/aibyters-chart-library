@@ -3,7 +3,7 @@ import type { ChartSpec } from "./chart-spec";
 
 export const ChartKindSchema = z.enum([
   "metric", "delta", "target", "sparkline", "severity", "progress",
-  "line", "bar", "area", "combo", "table", "matrix", "waterfall", "funnel",
+  "line", "bar", "column", "area", "combo", "pie", "donut", "table", "matrix", "waterfall", "funnel",
   "forecast", "anomaly", "insight", "recommendation"
 ]);
 
@@ -68,6 +68,18 @@ export const BarSpecSchema = BaseSpecSchema.extend({
   }).optional(),
 });
 
+export const ColumnSpecSchema = BaseSpecSchema.extend({
+  kind: z.literal("column"),
+  encodings: z.object({
+    x: z.string(),
+    y: z.union([z.string(), z.array(z.string())]),
+    color: z.string().optional()
+  }),
+  presentation: z.object({
+    mode: z.enum(["grouped", "stacked"]).optional()
+  }).optional(),
+});
+
 export const AreaSpecSchema = BaseSpecSchema.extend({
   kind: z.literal("area"),
   encodings: z.object({
@@ -83,6 +95,17 @@ export const AreaSpecSchema = BaseSpecSchema.extend({
 export const ComboSpecSchema = BaseSpecSchema.extend({
   kind: z.literal("combo"),
   encodings: z.object({ x: z.string(), yBar: z.string(), yLine: z.string() }),
+});
+
+export const PieSpecSchema = BaseSpecSchema.extend({
+  kind: z.literal("pie"),
+  encodings: z.object({ name: z.string(), value: z.string() }),
+});
+
+export const DonutSpecSchema = BaseSpecSchema.extend({
+  kind: z.literal("donut"),
+  encodings: z.object({ name: z.string(), value: z.string() }),
+  presentation: z.object({ centerLabel: z.string().optional() }).optional(),
 });
 
 export const TableSpecSchema = BaseSpecSchema.extend({
@@ -143,10 +166,15 @@ export const RecommendationSpecSchema = BaseSpecSchema.extend({
 
 export const ChartSpecSchema = z.discriminatedUnion("kind", [
   MetricSpecSchema, DeltaSpecSchema, TargetSpecSchema, SparklineSpecSchema, SeveritySpecSchema, ProgressSpecSchema,
-  LineSpecSchema, BarSpecSchema, AreaSpecSchema, ComboSpecSchema, TableSpecSchema, MatrixSpecSchema,
-  WaterfallSpecSchema, FunnelSpecSchema, ForecastSpecSchema, AnomalySpecSchema, InsightCardSpecSchema, RecommendationSpecSchema
+  LineSpecSchema, BarSpecSchema, ColumnSpecSchema, AreaSpecSchema, ComboSpecSchema, PieSpecSchema, DonutSpecSchema,
+  TableSpecSchema, MatrixSpecSchema, WaterfallSpecSchema, FunnelSpecSchema, ForecastSpecSchema, AnomalySpecSchema,
+  InsightCardSpecSchema, RecommendationSpecSchema
 ]);
 
 export function parseChartSpec(input: unknown): ChartSpec {
   return ChartSpecSchema.parse(input) as ChartSpec;
+}
+
+export function isValidChartSpec(input: unknown): input is ChartSpec {
+  return ChartSpecSchema.safeParse(input).success;
 }

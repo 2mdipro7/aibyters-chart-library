@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "jsx": "react-jsx",
+    "paths": {
+      "@aibyters/spec": ["../spec/src/index.ts"],
+      "@aibyters/charts-kpi": ["../charts-kpi/src/index.ts"],
+      "@aibyters/charts-bi": ["../charts-bi/src/index.ts"],
+      "@aibyters/charts-ai": ["../charts-ai/src/index.ts"],
+      "@aibyters/layout": ["../layout/src/index.ts"],
+      "@aibyters/core": ["../core/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}
