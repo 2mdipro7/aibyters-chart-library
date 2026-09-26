@@ -18,6 +18,8 @@ export const DataFrameMetaSchema = z.object({
   rowCount: z.number().optional(),
   lastUpdated: z.string().optional(),
   currency: z.string().optional(),
+  currencySymbol: z.string().optional(),
+  locale: z.string().optional(),
   timezone: z.string().optional(),
 });
 

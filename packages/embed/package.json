@@ -1,0 +1,27 @@
+{
+  "name": "@aibyters/embed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "One script for pages that are not React: window.AIBytersCharts.render(el, { spec, frame })",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "files": ["dist"],
+  "dependencies": {
+    "@aibyters/renderer": "workspace:*",
+    "@aibyters/spec": "workspace:*",
+    "@aibyters/theme": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.12.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^5.4.21"
+  }
+}

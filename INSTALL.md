@@ -57,6 +57,8 @@ The library is a **monorepo** with several scoped packages. You can install only
 | `@aibyters/charts-network` | Network Graph, Dependency Tree, Chord Diagram |
 | `@aibyters/charts-ai` | Insight Card, Recommendation Card |
 | `@aibyters/layout` | `WidgetCard` wrapper used internally by all charts |
+| `@aibyters/renderer` | `SpecChart`: draws a `ChartSpec` + `DataFrame` with the right component (what a backend or model returns) |
+| `@aibyters/embed` | One script for pages that are not React: `window.AIBytersCharts.render(el, { spec, frame })` |
 | `@aibyters/theme` | CSS design tokens & theme variables |
 
 ---

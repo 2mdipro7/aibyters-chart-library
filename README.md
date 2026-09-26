@@ -42,5 +42,7 @@ To run the local playground and view the entire component catalog:
 - **`packages/charts-*`**: Domain-specific headless visual components using Recharts, D3, and native SVG.
 - **`packages/layout`**: Dashboard layout components like Widget Cards.
 - **`packages/spec`**: Core data formats (DataFrame, ChartSpec).
+- **`packages/renderer`**: `SpecChart` draws a ChartSpec over a DataFrame with the matching component; the bridge for backends and models that answer with data plus a spec.
+- **`packages/embed`**: one script + stylesheet exposing `window.AIBytersCharts.render()` for pages that are not React (Jinja, Frappe, plain HTML).
 
 All charts use a standard `WidgetCard` wrapper from `@aibyters/layout` and are styled globally using Tailwind CSS variables to support rapid theming.

@@ -7,8 +7,11 @@ export type ChartKind =
   | "progress"
   | "line"
   | "bar"
+  | "column"
   | "area"
   | "combo"
+  | "pie"
+  | "donut"
   | "table"
   | "matrix"
   | "waterfall"
@@ -95,6 +98,7 @@ export type LineSpec = BaseSpec & {
   };
 };
 
+/** Horizontal bars: one bar per row of the `y` dimension, length from the `x` measure(s). */
 export type BarSpec = BaseSpec & {
   kind: "bar";
   encodings: {
@@ -105,6 +109,19 @@ export type BarSpec = BaseSpec & {
   presentation?: {
     mode?: "grouped" | "stacked";
     orientation?: "horizontal" | "vertical";
+  };
+};
+
+/** Vertical columns: one column per row of the `x` dimension, height from the `y` measure(s). */
+export type ColumnSpec = BaseSpec & {
+  kind: "column";
+  encodings: {
+    x: string; // dimension
+    y: string | string[]; // measure(s)
+    color?: string;
+  };
+  presentation?: {
+    mode?: "grouped" | "stacked";
   };
 };
 
@@ -126,6 +143,26 @@ export type ComboSpec = BaseSpec & {
     x: string;
     yBar: string;
     yLine: string;
+  };
+};
+
+/** Share of a whole: one slice per row, labelled by `name`, sized by `value`. */
+export type PieSpec = BaseSpec & {
+  kind: "pie";
+  encodings: {
+    name: string;
+    value: string;
+  };
+};
+
+export type DonutSpec = BaseSpec & {
+  kind: "donut";
+  encodings: {
+    name: string;
+    value: string;
+  };
+  presentation?: {
+    centerLabel?: string; // text under the total shown in the hole
   };
 };
 
@@ -214,8 +251,11 @@ export type ChartSpec =
   | ProgressSpec
   | LineSpec
   | BarSpec
+  | ColumnSpec
   | AreaSpec
   | ComboSpec
+  | PieSpec
+  | DonutSpec
   | TableSpec
   | MatrixSpec
   | WaterfallSpec
