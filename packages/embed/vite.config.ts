@@ -1,13 +1,23 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { CATALOG, catalogVersion } from "../renderer/src/catalog";
 
 // Everything is bundled from source (React, Recharts and all @aibyters packages) into one
 // script and one stylesheet, so a plain HTML page needs nothing else.
 const pkg = (name: string) => path.resolve(__dirname, `../${name}/src/index.ts`);
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      // The charts this bundle can draw from query results, for a backend to put in a model's prompt
+      name: "aibyters-catalog",
+      generateBundle() {
+        this.emitFile({ type: "asset", fileName: "catalog.json", source: JSON.stringify({ version: catalogVersion, kinds: CATALOG }, null, 2) + String.fromCharCode(10) });
+      },
+    },
+  ],
   define: { "process.env.NODE_ENV": '"production"' },
   resolve: {
     alias: {

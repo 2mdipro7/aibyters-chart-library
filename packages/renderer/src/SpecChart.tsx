@@ -12,6 +12,17 @@ import {
   LineChart,
   PieChart,
   WaterfallChart,
+  StackedAreaChart,
+  RankedBarChart,
+  LollipopChart,
+  ParetoChart,
+  WaffleChart,
+  DivergingBarChart,
+  TreemapChart,
+  DumbbellChart,
+  SlopeChart,
+  ProgressRingGroup,
+  GaugeChart,
 } from "@aibyters/charts-bi";
 import { InsightCard, RecommendationCard } from "@aibyters/charts-ai";
 import { planChart, type PlanOptions, type RenderPlan } from "./plan";
@@ -34,6 +45,17 @@ export const components: Record<string, React.ComponentType<any>> = {
   DataTable,
   FunnelChart,
   WaterfallChart,
+  StackedAreaChart,
+  RankedBarChart,
+  LollipopChart,
+  ParetoChart,
+  WaffleChart,
+  DivergingBarChart,
+  TreemapChart,
+  DumbbellChart,
+  SlopeChart,
+  ProgressRingGroup,
+  GaugeChart,
   InsightCard,
   RecommendationCard,
 };
@@ -46,12 +68,17 @@ export interface SpecChartProps extends PlanOptions {
   spec: ChartSpec;
   frame: DataFrame;
   className?: string;
+  /**
+   * Presentation props applied to whatever component the plan picks, e.g.
+   * { variant: "plain", height: 280, legend: false }. They never change the data or formatting.
+   */
+  chartProps?: Record<string, unknown>;
   /** Receives the plan each time it is computed; check `warnings` to tell the user what changed. */
   onPlan?: (plan: RenderPlan) => void;
 }
 
 /** Draws a ChartSpec over a DataFrame with the matching AI Byters component. */
-export function SpecChart({ spec, frame, className, onPlan, currencySymbol, locale }: SpecChartProps) {
+export function SpecChart({ spec, frame, className, chartProps, onPlan, currencySymbol, locale }: SpecChartProps) {
   const plan = useMemo(() => planChart(spec, frame, { currencySymbol, locale }), [spec, frame, currencySymbol, locale]);
 
   useEffect(() => {
@@ -60,5 +87,5 @@ export function SpecChart({ spec, frame, className, onPlan, currencySymbol, loca
 
   const Component = components[plan.component];
   if (!Component) return null;
-  return <Component {...plan.props} className={className} />;
+  return <Component {...plan.props} {...chartProps} className={className} />;
 }

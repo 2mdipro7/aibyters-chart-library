@@ -19,7 +19,17 @@ export type ChartKind =
   | "forecast"
   | "anomaly"
   | "insight"
-  | "recommendation";
+  | "recommendation"
+  | "ranked_bar"
+  | "lollipop"
+  | "pareto"
+  | "waffle"
+  | "diverging_bar"
+  | "treemap"
+  | "dumbbell"
+  | "slope"
+  | "progress_rings"
+  | "gauge";
 
 export type BaseSpec = {
   kind: ChartKind;
@@ -242,6 +252,41 @@ export type RecommendationSpec = BaseSpec & {
   };
 };
 
+// --- Comparison, ranking and part-of-whole specs (one row per category) ---
+
+/** One row per category: `name` labels it, `value` sizes it. */
+export type NameValueSpec = BaseSpec & {
+  kind: "ranked_bar" | "lollipop" | "pareto" | "waffle" | "diverging_bar" | "treemap";
+  encodings: {
+    name: string;
+    value: string;
+  };
+};
+
+/** Two measures per category shown as a pair of dots joined by a line (e.g. last year vs this year). */
+export type DumbbellSpec = BaseSpec & {
+  kind: "dumbbell";
+  encodings: { name: string; a: string; b: string };
+};
+
+/** How each category moved between two points in time. */
+export type SlopeSpec = BaseSpec & {
+  kind: "slope";
+  encodings: { name: string; start: string; end: string };
+};
+
+/** One ring per category; `max` is that ring's denominator (default: share of the total). */
+export type ProgressRingsSpec = BaseSpec & {
+  kind: "progress_rings";
+  encodings: { name: string; value: string; max?: string };
+};
+
+/** A single value on a dial from 0 (or min) to max, with an optional target mark. */
+export type GaugeSpec = BaseSpec & {
+  kind: "gauge";
+  encodings: { value: string; max?: string; target?: string };
+};
+
 export type ChartSpec =
   | MetricSpec
   | DeltaSpec
@@ -263,4 +308,9 @@ export type ChartSpec =
   | ForecastSpec
   | AnomalySpec
   | InsightCardSpec
-  | RecommendationSpec;
+  | RecommendationSpec
+  | NameValueSpec
+  | DumbbellSpec
+  | SlopeSpec
+  | ProgressRingsSpec
+  | GaugeSpec;

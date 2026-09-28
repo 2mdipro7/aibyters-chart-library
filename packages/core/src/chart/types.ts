@@ -68,6 +68,11 @@ export interface BaseChartProps {
   emptyMessage?: string;
   /** Render the chart without the card chrome (title bar, border, padding). */
   variant?: "card" | "plain";
+  /**
+   * Keep the title for screen readers but do not draw it; header actions (export menu,
+   * headerAction) still show. For hosts whose own card already carries the heading.
+   */
+  hideTitle?: boolean;
   /** Accessible description for screen readers. Defaults to title + description. */
   ariaLabel?: string;
   /** Slot rendered in the card header (filters, actions). */

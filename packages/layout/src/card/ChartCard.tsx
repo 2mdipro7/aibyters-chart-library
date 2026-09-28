@@ -3,7 +3,7 @@ import { ChartErrorBoundary, ChartFrame, type BaseChartProps, type ChartFramePro
 import { WidgetCard } from "./WidgetCard";
 
 export interface ChartCardProps
-  extends Pick<BaseChartProps, "title" | "description" | "headerAction" | "footer" | "exportData" | "exportColumns" | "className" | "style" | "variant" | "ariaLabel">,
+  extends Pick<BaseChartProps, "title" | "description" | "headerAction" | "footer" | "exportData" | "exportColumns" | "className" | "style" | "variant" | "hideTitle" | "ariaLabel">,
     Omit<ChartFrameProps, "footer" | "className" | "style" | "ariaLabel"> {}
 
 /**
@@ -21,6 +21,7 @@ export function ChartCard({
   className,
   style,
   variant,
+  hideTitle,
   ariaLabel,
   children,
   ...frame
@@ -36,6 +37,7 @@ export function ChartCard({
       className={className}
       style={style}
       variant={variant}
+      hideTitle={hideTitle}
     >
       <ChartErrorBoundary>
         <ChartFrame ariaLabel={ariaLabel ?? (description ? `${title}. ${description}` : title)} {...frame}>

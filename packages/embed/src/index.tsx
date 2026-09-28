@@ -1,6 +1,6 @@
 import { createRoot, type Root } from "react-dom/client";
 import { ThemeProvider } from "@aibyters/theme";
-import { SpecChart, planChart, formatCell, formatMoney, formatNumber, type RenderPlan } from "@aibyters/renderer";
+import { SpecChart, planChart, formatCell, formatMoney, formatNumber, CATALOG, type RenderPlan } from "@aibyters/renderer";
 import { isValidChartSpec, isValidDataFrame, type ChartSpec, type DataFrame } from "@aibyters/spec";
 
 export interface RenderOptions {
@@ -12,6 +12,11 @@ export interface RenderOptions {
   currencySymbol?: string;
   locale?: string;
   className?: string;
+  /**
+   * Presentation props for the chart component: variant ("plain" drops the card chrome), height
+   * (px, "auto" or "fill"), legend (false or { position, maxRows }), dataLabels, colors, animate.
+   */
+  chart?: Record<string, unknown>;
   /** Receives the plan; its `warnings` say when the chart differs from the spec. */
   onPlan?: (plan: RenderPlan) => void;
 }
@@ -41,6 +46,7 @@ export function render(el: Element, options: RenderOptions): RenderPlan {
         currencySymbol={options.currencySymbol}
         locale={options.locale}
         className={options.className}
+        chartProps={options.chart}
         onPlan={options.onPlan}
       />
     </ThemeProvider>
@@ -56,9 +62,9 @@ export function unmount(el: Element): void {
   }
 }
 
-export const version = "0.1.0";
+export const version = "0.2.0";
 
-const api = { render, unmount, planChart, formatCell, formatMoney, formatNumber, version };
+const api = { render, unmount, planChart, formatCell, formatMoney, formatNumber, catalog: CATALOG, version };
 
 declare global {
   interface Window {

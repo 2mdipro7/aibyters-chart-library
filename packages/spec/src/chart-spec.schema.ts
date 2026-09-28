@@ -4,7 +4,8 @@ import type { ChartSpec } from "./chart-spec";
 export const ChartKindSchema = z.enum([
   "metric", "delta", "target", "sparkline", "severity", "progress",
   "line", "bar", "column", "area", "combo", "pie", "donut", "table", "matrix", "waterfall", "funnel",
-  "forecast", "anomaly", "insight", "recommendation"
+  "forecast", "anomaly", "insight", "recommendation",
+  "ranked_bar", "lollipop", "pareto", "waffle", "diverging_bar", "treemap", "dumbbell", "slope", "progress_rings", "gauge"
 ]);
 
 const BaseSpecSchema = z.object({
@@ -164,11 +165,43 @@ export const RecommendationSpecSchema = BaseSpecSchema.extend({
   }),
 });
 
+const nameValue = (kind: "ranked_bar" | "lollipop" | "pareto" | "waffle" | "diverging_bar" | "treemap") =>
+  BaseSpecSchema.extend({ kind: z.literal(kind), encodings: z.object({ name: z.string(), value: z.string() }) });
+
+export const RankedBarSpecSchema = nameValue("ranked_bar");
+export const LollipopSpecSchema = nameValue("lollipop");
+export const ParetoSpecSchema = nameValue("pareto");
+export const WaffleSpecSchema = nameValue("waffle");
+export const DivergingBarSpecSchema = nameValue("diverging_bar");
+export const TreemapSpecSchema = nameValue("treemap");
+
+export const DumbbellSpecSchema = BaseSpecSchema.extend({
+  kind: z.literal("dumbbell"),
+  encodings: z.object({ name: z.string(), a: z.string(), b: z.string() }),
+});
+
+export const SlopeSpecSchema = BaseSpecSchema.extend({
+  kind: z.literal("slope"),
+  encodings: z.object({ name: z.string(), start: z.string(), end: z.string() }),
+});
+
+export const ProgressRingsSpecSchema = BaseSpecSchema.extend({
+  kind: z.literal("progress_rings"),
+  encodings: z.object({ name: z.string(), value: z.string(), max: z.string().optional() }),
+});
+
+export const GaugeSpecSchema = BaseSpecSchema.extend({
+  kind: z.literal("gauge"),
+  encodings: z.object({ value: z.string(), max: z.string().optional(), target: z.string().optional() }),
+});
+
 export const ChartSpecSchema = z.discriminatedUnion("kind", [
   MetricSpecSchema, DeltaSpecSchema, TargetSpecSchema, SparklineSpecSchema, SeveritySpecSchema, ProgressSpecSchema,
   LineSpecSchema, BarSpecSchema, ColumnSpecSchema, AreaSpecSchema, ComboSpecSchema, PieSpecSchema, DonutSpecSchema,
   TableSpecSchema, MatrixSpecSchema, WaterfallSpecSchema, FunnelSpecSchema, ForecastSpecSchema, AnomalySpecSchema,
-  InsightCardSpecSchema, RecommendationSpecSchema
+  InsightCardSpecSchema, RecommendationSpecSchema,
+  RankedBarSpecSchema, LollipopSpecSchema, ParetoSpecSchema, WaffleSpecSchema, DivergingBarSpecSchema, TreemapSpecSchema,
+  DumbbellSpecSchema, SlopeSpecSchema, ProgressRingsSpecSchema, GaugeSpecSchema
 ]);
 
 export function parseChartSpec(input: unknown): ChartSpec {

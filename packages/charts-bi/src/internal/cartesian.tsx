@@ -229,7 +229,7 @@ export function animationProps(ctx: ChartContextValue) {
 
 const CARD_KEYS = [
   "title", "description", "height", "aspectRatio", "minHeight", "legend", "loading", "error", "emptyMessage",
-  "variant", "ariaLabel", "headerAction", "footer", "exportColumns", "className", "style", "animate",
+  "variant", "hideTitle", "ariaLabel", "headerAction", "footer", "exportColumns", "className", "style", "animate",
 ] as const;
 export type CardKey = (typeof CARD_KEYS)[number];
 

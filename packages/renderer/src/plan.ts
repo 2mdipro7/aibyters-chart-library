@@ -1,5 +1,5 @@
 import type { ChartSpec, DataFrame, FieldMeta, Primitive } from "@aibyters/spec";
-import { axisFormatter, formatCell, formatNumber, type FormatOptions } from "./format";
+import { axisFormatter, formatCell, type FormatOptions } from "./format";
 
 /** Which component to draw and with what props. `warnings` say where the plan had to differ from the spec. */
 export interface RenderPlan {
@@ -14,6 +14,7 @@ export interface TableColumn {
   key: string;
   header: string;
   align: "left" | "right";
+  type: "text" | "number";
   render: (value: unknown) => string;
 }
 
@@ -59,6 +60,7 @@ export function tableProps(
         key,
         header: field?.label ?? key,
         align: numeric ? "right" : "left",
+        type: numeric ? "number" : "text",
         render: (value: unknown) => formatCell(value, field, options),
       };
     }),
@@ -112,15 +114,9 @@ export function planChart(spec: ChartSpec, frame: DataFrame, options: PlanOption
       const current = num(first[value]);
       const previous = num(first[comparison]);
       const delta = previous === 0 ? 0 : (current - previous) / Math.abs(previous);
-      if (fields.get(value)?.format === "currency") {
-        // DeltaCard formats in USD; keep the hotel's symbol by showing the change in the description
-        const change = `${delta >= 0 ? "+" : "−"}${formatNumber(Math.abs(delta) * 100, { ...fmt, decimals: 1 })}%`;
-        const description = [spec.description, `${change} vs ${cell(comparison)(previous)}`].filter(Boolean).join(" · ");
-        return { component: "MetricCard", props: { ...base, value: current, valueFormatter: cell(value), description }, warnings };
-      }
       return {
         component: "DeltaCard",
-        props: { ...base, value: current, delta, format: "number", invertColors: spec.presentation?.invertColors },
+        props: { ...base, value: current, delta, previousValue: previous, valueFormatter: cell(value), invertColors: spec.presentation?.invertColors },
         warnings,
       };
     }
@@ -130,8 +126,7 @@ export function planChart(spec: ChartSpec, frame: DataFrame, options: PlanOption
       if (!have([value, target])) return table();
       const current = num(first[value]);
       const goal = num(first[target]);
-      const description = [spec.description, `${cell(value)(current)} of ${cell(target)(goal)}`].filter(Boolean).join(" · ");
-      return { component: "TargetCard", props: { ...base, value: current, target: goal, format: "number", description }, warnings };
+      return { component: "TargetCard", props: { ...base, value: current, target: goal, valueFormatter: cell(value) }, warnings };
     }
 
     case "sparkline": {
@@ -141,10 +136,7 @@ export function planChart(spec: ChartSpec, frame: DataFrame, options: PlanOption
       const last = series[series.length - 1] ?? 0;
       const previous = series[series.length - 2];
       const trend = previous === undefined || last === previous ? "neutral" : last > previous ? "up" : "down";
-      const description = [spec.description, fields.get(value)?.format === "currency" ? cell(value)(last) : undefined]
-        .filter(Boolean)
-        .join(" · ");
-      return { component: "SparklineCard", props: { ...base, value: last, data: series, trend, format: "number", description }, warnings };
+      return { component: "SparklineCard", props: { ...base, value: last, data: series, trend, valueFormatter: cell(value) }, warnings };
     }
 
     case "progress": {
@@ -152,7 +144,7 @@ export function planChart(spec: ChartSpec, frame: DataFrame, options: PlanOption
       if (!have([value, max])) return table();
       return {
         component: "ProgressCard",
-        props: { ...base, value: num(first[value]), max: num(first[max]) || 100, type: spec.presentation?.type ?? "linear" },
+        props: { ...base, value: num(first[value]), max: num(first[max]) || 100, type: spec.presentation?.type ?? "linear", valueFormatter: cell(value) },
         warnings,
       };
     }
@@ -170,7 +162,7 @@ export function planChart(spec: ChartSpec, frame: DataFrame, options: PlanOption
       const ys = asList(spec.encodings.y);
       if (ys.length === 0 || !have([x, ...ys])) return table();
       return {
-        component: spec.kind === "line" ? "LineChart" : "AreaChart",
+        component: spec.kind === "line" ? "LineChart" : spec.presentation?.mode === "stacked" ? "StackedAreaChart" : "AreaChart",
         props: { ...base, data: rows, index: x, categories: ys, valueFormatter: axis(ys) },
         warnings,
       };
@@ -234,6 +226,76 @@ export function planChart(spec: ChartSpec, frame: DataFrame, options: PlanOption
       if (!have([x, y])) return table();
       const data = rows.map((r) => ({ name: String(r[x] ?? ""), value: num(r[y]) }));
       return { component: "WaterfallChart", props: { ...base, data, valueFormatter: axis([y]) }, warnings };
+    }
+
+    case "ranked_bar":
+    case "lollipop":
+    case "pareto":
+    case "waffle":
+    case "diverging_bar":
+    case "treemap": {
+      const { name, value } = spec.encodings;
+      if (!have([name, value])) return table();
+      const data = rows.map((r) => ({ name: String(r[name] ?? ""), value: num(r[value]) }));
+      const fmtValue = cell(value);
+      const component = {
+        ranked_bar: "RankedBarChart",
+        lollipop: "LollipopChart",
+        pareto: "ParetoChart",
+        waffle: "WaffleChart",
+        diverging_bar: "DivergingBarChart",
+        treemap: "TreemapChart",
+      }[spec.kind];
+      const props: Record<string, any> = { ...base, data, valueFormatter: spec.kind === "waffle" || spec.kind === "treemap" ? fmtValue : axis([value]) };
+      if (spec.kind === "ranked_bar") {
+        props.valueFormatter = fmtValue; // each bar carries its full figure
+        props.highlightTop = Math.min(3, data.length);
+      }
+      if (spec.kind === "pareto") props.barLabel = label(value);
+      if ((spec.kind === "waffle" || spec.kind === "treemap") && data.some((d) => d.value < 0)) {
+        warnings.push("Negative values cannot be shown as parts of a whole; they were left out.");
+        props.data = data.filter((d) => d.value > 0);
+      }
+      return { component, props, warnings };
+    }
+
+    case "dumbbell": {
+      const { name, a, b } = spec.encodings;
+      if (!have([name, a, b])) return table();
+      const data = rows.map((r) => ({ name: String(r[name] ?? ""), a: num(r[a]), b: num(r[b]) }));
+      return { component: "DumbbellChart", props: { ...base, data, aLabel: label(a), bLabel: label(b), valueFormatter: axis([a, b]) }, warnings };
+    }
+
+    case "slope": {
+      const { name, start, end } = spec.encodings;
+      if (!have([name, start, end])) return table();
+      const data = rows.map((r) => ({ name: String(r[name] ?? ""), start: num(r[start]), end: num(r[end]) }));
+      return { component: "SlopeChart", props: { ...base, data, startLabel: label(start), endLabel: label(end), valueFormatter: axis([start, end]) }, warnings };
+    }
+
+    case "progress_rings": {
+      const { name, value, max } = spec.encodings;
+      if (!have([name, value, ...(max ? [max] : [])])) return table();
+      const data = rows.map((r) => ({
+        name: String(r[name] ?? ""),
+        value: num(r[value]),
+        ...(max ? { max: num(r[max]) } : {}),
+        amount: cell(value)(r[value]),
+      }));
+      return { component: "ProgressRingGroup", props: { ...base, data, valueFormatter: cell(value) }, warnings };
+    }
+
+    case "gauge": {
+      const { value, max, target } = spec.encodings;
+      if (!have([value, ...(max ? [max] : []), ...(target ? [target] : [])])) return table();
+      const props: Record<string, any> = { ...base, value: num(first[value]), valueFormatter: cell(value) };
+      if (max) props.max = num(first[max]) || 100;
+      else if (fields.get(value)?.format !== "percent" && num(first[value]) > 100) {
+        warnings.push("No maximum was given for the dial; showing the figure instead.");
+        return { component: "MetricCard", props: { ...base, value: num(first[value]), valueFormatter: cell(value) }, warnings };
+      }
+      if (target) props.target = num(first[target]);
+      return { component: "GaugeChart", props, warnings };
     }
 
     case "table": {

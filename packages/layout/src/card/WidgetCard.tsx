@@ -20,6 +20,8 @@ export interface WidgetCardProps {
   headingLevel?: 2 | 3 | 4 | 5;
   /** Removes the header entirely (title is still exposed to assistive tech via aria-label). */
   hideHeader?: boolean;
+  /** Visually hide the title and description (still read by screen readers) but keep header actions. */
+  hideTitle?: boolean;
   id?: string;
 }
 
@@ -203,6 +205,11 @@ function ExportMenuItem({ label, onClick }: { label: string; onClick: () => void
   );
 }
 
+const visuallyHidden: React.CSSProperties = {
+  position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden",
+  clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0,
+};
+
 export function WidgetCard({
   title,
   description,
@@ -216,24 +223,28 @@ export function WidgetCard({
   exportColumns,
   headingLevel = 3,
   hideHeader = false,
+  hideTitle = false,
   id,
 }: WidgetCardProps) {
   const Heading = `h${headingLevel}` as keyof JSX.IntrinsicElements;
   const plain = variant === "plain";
   const showExport = exportData && exportData.length > 0;
+  const hasActions = Boolean(showExport || headerAction);
+  const drawHeader = !hideHeader && (!hideTitle || hasActions);
   return (
     <section
       id={id}
       className={`vi-widget-card ${plain ? "vi-widget-card--plain" : ""} ${className}`.trim()}
       style={{ ...(plain ? styles.plain : styles.card), ...style }}
-      aria-label={hideHeader ? title : undefined}
+      aria-label={hideHeader || hideTitle ? title : undefined}
     >
-      {!hideHeader && (
+      {drawHeader && (
         <div className="vi-widget-card__header" style={plain ? styles.headerPlain : styles.header}>
-          <div style={{ minWidth: 0, flex: "1 1 auto" }}>
+          <div style={hideTitle ? visuallyHidden : { minWidth: 0, flex: "1 1 auto" }}>
             <Heading style={styles.title}>{title}</Heading>
             {description && <p style={styles.description}>{description}</p>}
           </div>
+          {hideTitle && <div style={{ flex: "1 1 auto" }} />}
           {(showExport || headerAction) && (
             <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>
               {showExport && <ExportMenu data={exportData!} columns={exportColumns} title={title} />}

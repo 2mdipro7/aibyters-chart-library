@@ -51,7 +51,7 @@ describe("planChart", () => {
     expect(plan.props.valueFormatter(12500)).toBe("৳12,500");
   });
 
-  it("keeps a money delta out of the USD-only DeltaCard", () => {
+  it("draws a money delta on DeltaCard with the hotel's symbol", () => {
     const deltaFrame: DataFrame = {
       fields: [
         { key: "now", label: "This month", type: "number", format: "currency" },
@@ -61,8 +61,10 @@ describe("planChart", () => {
       meta: { currencySymbol: "৳" },
     };
     const plan = planChart({ kind: "delta", title: "Revenue", encodings: { value: "now", comparison: "before" } }, deltaFrame);
-    expect(plan.component).toBe("MetricCard");
-    expect(plan.props.description).toBe("+20.0% vs ৳1,000");
+    expect(plan.component).toBe("DeltaCard");
+    expect(plan.props.delta).toBeCloseTo(0.2);
+    expect(plan.props.previousValue).toBe(1000);
+    expect(plan.props.valueFormatter(1200)).toBe("৳1,200");
   });
 
   it("draws pie and donut with the total in the hole", () => {
