@@ -4,7 +4,7 @@ Scope: every package under `packages/`, the playground, the build and publishing
 reproduction of the "legend and data labels overlap when the library is adopted in another app"
 report. The reproduction used a Vite host **without Tailwind**, a 3-column dashboard grid
 (~370 px per widget), six-series line/column data with currency formatting, and an 8-slice
-pie/donut. Screenshot of the original behaviour: [`audit/host-before.png`](./audit/host-before.png).
+pie/donut. Screenshots: original behaviour [`audit/host-before.png`](./audit/host-before.png); after this change [`audit/host-after.png`](./audit/host-after.png) (desktop) and [`audit/host-after-phone.png`](./audit/host-after-phone.png) (390 px).
 
 ## 1. Root causes of the overlap / clipping reports
 
