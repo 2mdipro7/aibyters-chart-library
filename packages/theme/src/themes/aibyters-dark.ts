@@ -19,6 +19,7 @@ const aibytersColors = {
     cardHover: "#009B57",
     border: "#009B57",
     borderLight: "#C5EEB5",
+    grid: "#1f5a35",
     overlay: "rgba(14,36,25,0.8)",
   },
   chart: [

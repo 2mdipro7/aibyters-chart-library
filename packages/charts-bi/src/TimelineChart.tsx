@@ -1,4 +1,3 @@
-import React from "react";
 import { WidgetCard } from "@aibyters/layout";
 
 export interface TimelineChartProps {
@@ -9,10 +8,8 @@ export interface TimelineChartProps {
   className?: string;
 }
 
-const defaultColors = [
-  "#6366f1", "#06b6d4", "#22c55e", "#f59e0b", "#ef4444",
-  "#8b5cf6", "#ec4899", "#14b8a6", "#f97316", "#64748b"
-];
+import { themePalette } from "@aibyters/core";
+const defaultColors = themePalette(10);
 
 export function TimelineChart({
   title,

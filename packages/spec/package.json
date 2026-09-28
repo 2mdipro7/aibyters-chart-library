@@ -1,12 +1,26 @@
 {
   "name": "@aibyters/spec",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.1.0",
+  "description": "Chart specification and data-frame contracts (zod schemas) plus number/date/currency formatters shared by every AI Byters chart.",
+  "license": "SEE LICENSE IN LICENSE",
   "type": "module",
-  "main": "./dist/index.js",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "import": "./dist/index.js", "types": "./dist/index.d.ts" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "restricted"
   },
   "scripts": {
     "build": "vite build",
@@ -14,5 +28,11 @@
     "test": "vitest run",
     "clean": "rimraf dist"
   },
-  "files": ["dist"]
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "vite": "^5.4.21",
+    "vitest": "^3.2.4"
+  }
 }

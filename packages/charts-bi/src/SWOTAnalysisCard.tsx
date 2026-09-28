@@ -1,4 +1,3 @@
-import React from "react";
 import { WidgetCard } from "@aibyters/layout";
 
 export interface SWOTAnalysisCardProps {
@@ -72,25 +71,25 @@ export function SWOTAnalysisCard({
         <Quadrant 
           title="Strengths" 
           items={data.strengths} 
-          color="#22c55e" 
+          color="var(--vi-color-positive-main, #22c55e)" 
           bgColor="rgba(34, 197, 94, 0.05)" 
         />
         <Quadrant 
           title="Weaknesses" 
           items={data.weaknesses} 
-          color="#f59e0b" 
+          color="var(--vi-color-warning-main, #f59e0b)" 
           bgColor="rgba(245, 158, 11, 0.05)" 
         />
         <Quadrant 
           title="Opportunities" 
           items={data.opportunities} 
-          color="#06b6d4" 
+          color="var(--vi-color-info-main, #06b6d4)" 
           bgColor="rgba(6, 182, 212, 0.05)" 
         />
         <Quadrant 
           title="Threats" 
           items={data.threats} 
-          color="#ef4444" 
+          color="var(--vi-color-critical-main, #ef4444)" 
           bgColor="rgba(239, 68, 68, 0.05)" 
         />
       </div>

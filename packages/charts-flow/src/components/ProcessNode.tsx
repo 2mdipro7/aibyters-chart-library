@@ -10,7 +10,7 @@ export function ProcessNode({ data }: NodeProps) {
     subtitle,
     items,
     variant = 'default',
-  } = data as ProcessNodeData;
+  } = data as unknown as ProcessNodeData;
 
   const className = [
     'flow-process-node',

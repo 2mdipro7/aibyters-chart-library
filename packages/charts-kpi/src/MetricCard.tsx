@@ -1,31 +1,26 @@
-import React from 'react';
-import { WidgetCard } from '@aibyters/layout';
-import { formatCompactNumber, formatCurrency, formatPercent } from '@aibyters/spec';
+import { WidgetCard } from "@aibyters/layout";
+import { containerStyle, fmt, Skeleton, valueStyle, tone, type KpiBaseProps, type KpiFormat } from "./internal/kpi";
 
-export interface MetricCardProps {
-  title: string;
+export interface MetricCardProps extends KpiBaseProps {
   value: number;
-  format?: 'number' | 'currency' | 'percent';
-  description?: string;
-  className?: string;
+  format?: KpiFormat;
+  /** Small text after the value (unit, period). */
+  suffix?: string;
+  /** Secondary line under the value. */
+  subtitle?: string;
 }
 
-export function MetricCard({
-  title,
-  value,
-  format = 'number',
-  description,
-  className = '',
-}: MetricCardProps) {
-  let formattedValue = value.toString();
-  if (format === 'number') formattedValue = formatCompactNumber(value);
-  if (format === 'currency') formattedValue = formatCurrency(value);
-  if (format === 'percent') formattedValue = formatPercent(value);
-
+export function MetricCard({ title, description, value, format = "number", suffix, subtitle, className, style, variant, headerAction, footer, size, loading, ...f }: MetricCardProps) {
   return (
-    <WidgetCard title={title} description={description} className={className}>
-      <div style={{ fontSize: '36px', fontWeight: 'bold', color: 'var(--vi-color-text-primary)', marginTop: '8px' }}>
-        {formattedValue}
+    <WidgetCard title={title} description={description} className={className} style={style} variant={variant} headerAction={headerAction} footer={footer}>
+      <div style={containerStyle} className="vi-kpi">
+        {loading ? <Skeleton /> : (
+          <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap" }}>
+            <span className="vi-kpi-value" style={valueStyle(size)}>{fmt(value, format, f)}</span>
+            {suffix && <span style={{ fontSize: 13, color: tone.neutral }}>{suffix}</span>}
+          </div>
+        )}
+        {subtitle && <div style={{ fontSize: 12, color: tone.neutral }}>{subtitle}</div>}
       </div>
     </WidgetCard>
   );

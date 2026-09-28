@@ -1,65 +1,30 @@
-import React from "react";
 import { WidgetCard } from "@aibyters/layout";
-import { formatCompactNumber, formatCurrency, formatPercent } from "@aibyters/spec";
+import { containerStyle, fmt, Skeleton, valueStyle, tone, type KpiBaseProps, type KpiFormat } from "./internal/kpi";
 
-export interface TargetCardProps {
-  title: string;
+export interface TargetCardProps extends KpiBaseProps {
   value: number;
   target: number;
-  format?: "number" | "currency" | "percent";
-  description?: string;
-  className?: string;
+  format?: KpiFormat;
+  /** Colour thresholds on attainment: below `warnBelow` = warning, below `dangerBelow` = negative. */
+  warnBelow?: number;
+  dangerBelow?: number;
 }
 
-export function TargetCard({
-  title,
-  value,
-  target,
-  format = "number",
-  description,
-  className,
-}: TargetCardProps) {
-  let displayValue = String(value);
-  let displayTarget = String(target);
-  
-  if (format === "number") {
-    displayValue = formatCompactNumber(value);
-    displayTarget = formatCompactNumber(target);
-  }
-  if (format === "currency") {
-    displayValue = formatCurrency(value);
-    displayTarget = formatCurrency(target);
-  }
-  if (format === "percent") {
-    displayValue = formatPercent(value);
-    displayTarget = formatPercent(target);
-  }
-
-  const progressPercent = Math.min(100, Math.max(0, (value / target) * 100));
-
+export function TargetCard({ title, description, value, target, format = "number", warnBelow = 0.9, dangerBelow = 0.7, className, style, variant, headerAction, footer, size, loading, ...f }: TargetCardProps) {
+  const ratio = target > 0 ? value / target : 0;
+  const pct = Math.min(1, Math.max(0, ratio));
+  const color = ratio < dangerBelow ? tone.negative : ratio < warnBelow ? tone.warning : tone.positive;
   return (
-    <WidgetCard title={title} description={description} className={className}>
-      <div className="flex flex-col justify-center h-full space-y-4">
-        <div className="flex items-end justify-between">
-          <div className="text-4xl font-bold text-[var(--vi-color-text-primary)]">
-            {displayValue}
-          </div>
-          <div className="text-sm font-medium text-[var(--vi-color-text-tertiary)] mb-1">
-            Target: {displayTarget}
-          </div>
+    <WidgetCard title={title} description={description} className={className} style={style} variant={variant} headerAction={headerAction} footer={footer}>
+      <div style={containerStyle} className="vi-kpi">
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
+          {loading ? <Skeleton /> : <span className="vi-kpi-value" style={valueStyle(size)}>{fmt(value, format, f)}</span>}
+          <span style={{ fontSize: 12, color: tone.neutral, fontVariantNumeric: "tabular-nums" }}>Target {fmt(target, format, f)}</span>
         </div>
-        
-        {/* Progress Bar Container */}
-        <div className="h-2 w-full rounded-full bg-[var(--vi-color-surface-background)] overflow-hidden">
-          <div 
-            className="h-full bg-[var(--vi-color-brand-primary)] rounded-full transition-all duration-500 ease-in-out"
-            style={{ width: `${progressPercent}%` }}
-          />
+        <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct * 100)} aria-label={`${Math.round(ratio * 100)}% of target`} style={{ height: 8, width: "100%", borderRadius: 999, background: tone.track, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${pct * 100}%`, background: color, borderRadius: 999, transition: "width 400ms ease" }} />
         </div>
-        
-        <div className="text-xs text-right font-medium text-[var(--vi-color-text-secondary)]">
-          {progressPercent.toFixed(1)}% Achieved
-        </div>
+        <div style={{ fontSize: 12, color: tone.neutral, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{(ratio * 100).toFixed(1)}% achieved</div>
       </div>
     </WidgetCard>
   );

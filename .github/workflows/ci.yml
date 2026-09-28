@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Typecheck, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the "packageManager" field from package.json, so the pnpm version is pinned in one place.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck packages
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Build playground
+        run: pnpm build:playground
+      - name: Build host smoke app (no Tailwind consumer)
+        run: pnpm --filter host-smoke build
+
+      - name: Bundle size report
+        run: node scripts/bundle-size.mjs >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload playground
+        uses: actions/upload-artifact@v4
+        with:
+          name: playground-dist
+          path: apps/playground/dist
+          retention-days: 14
+          if-no-files-found: error

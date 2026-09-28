@@ -1,15 +1,26 @@
 {
   "name": "@aibyters/charts-bi",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.1.0",
+  "description": "Business-intelligence charts (line, area, bar, column, combo, pie, donut, funnel, waterfall, tables and strategy frameworks) built on Recharts.",
+  "license": "SEE LICENSE IN LICENSE",
   "type": "module",
-  "main": "./dist/index.js",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     }
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "restricted"
   },
   "scripts": {
     "build": "vite build",
@@ -17,26 +28,24 @@
     "test": "vitest run",
     "clean": "rimraf dist"
   },
-  "files": [
-    "dist"
-  ],
   "dependencies": {
     "@aibyters/core": "workspace:*",
     "@aibyters/layout": "workspace:*",
     "@aibyters/spec": "workspace:*",
     "clsx": "^2.1.1",
     "lucide-react": "^0.378.0",
-    "recharts": "^2.12.7",
     "tailwind-merge": "^2.3.0"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0",
+    "recharts": "^2.15.4"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "recharts": "^2.15.4",
     "vite": "^5.4.21",
-    "vitest": "^4.1.8"
+    "vitest": "^3.2.4"
   }
 }

@@ -1,15 +1,26 @@
 {
   "name": "@aibyters/charts-ds",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.1.0",
+  "description": "Data-science charts (forecast band, anomaly timeline, histogram, box plot, heatmap, control chart, violin, candlestick, volcano).",
+  "license": "SEE LICENSE IN LICENSE",
   "type": "module",
-  "main": "./dist/index.js",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     }
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "restricted"
   },
   "scripts": {
     "build": "vite build",
@@ -17,24 +28,23 @@
     "test": "vitest run",
     "clean": "rimraf dist"
   },
-  "files": [
-    "dist"
-  ],
   "dependencies": {
-    "@aibyters/spec": "workspace:*",
+    "@aibyters/charts-bi": "workspace:*",
     "@aibyters/core": "workspace:*",
     "@aibyters/layout": "workspace:*",
-    "@aibyters/charts-bi": "workspace:*",
-    "recharts": "^2.12.7",
+    "@aibyters/spec": "workspace:*",
     "lucide-react": "^0.378.0"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0",
+    "recharts": "^2.15.4"
   },
   "devDependencies": {
-    "vitest": "^4.1.8",
     "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0"
+    "@types/react-dom": "^18.2.0",
+    "recharts": "^2.15.4",
+    "vite": "^5.4.21",
+    "vitest": "^3.2.4"
   }
 }

@@ -1,85 +1,43 @@
-import React from "react";
-import {
-  RadarChart as RechartsRadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
-} from "recharts";
-import { WidgetCard } from "@aibyters/layout";
-import { formatCompactNumber } from "@aibyters/spec";
+import { RadarChart as RechartsRadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, ResponsiveContainer } from "recharts";
+import { ChartCard } from "@aibyters/layout";
+import { chartVars, rechartsTooltip, truncateToWidth, type BaseChartProps, type ChartContextValue } from "@aibyters/core";
+import { DEFAULT_FORMATTER, animationProps, buildSeries, seriesOpacity, splitCardProps, type CardKey } from "./internal/cartesian";
 
-export interface RadarChartProps {
-  title: string;
-  description?: string;
+export interface RadarChartProps extends BaseChartProps {
   data: any[];
   index: string;
   categories: string[];
-  colors?: string[];
-  className?: string;
+  seriesLabels?: Record<string, string>;
+  /** Fixed max for the radius axis (e.g. 100 for scores). */
+  max?: number;
+  fillOpacity?: number;
 }
 
-const defaultColors = [
-  "#6366f1", "#06b6d4", "#22c55e", "#f59e0b", "#ef4444",
-  "#8b5cf6", "#ec4899", "#14b8a6", "#f97316", "#64748b"
-];
-
-export function RadarChart({
-  title,
-  description,
-  data,
-  index,
-  categories,
-  colors = defaultColors,
-  className
-}: RadarChartProps) {
+export function RadarChart(props: RadarChartProps) {
+  const [card, plot] = splitCardProps(props);
+  const series = buildSeries(props.categories, props.colors, props.seriesLabels, "line");
   return (
-    <WidgetCard title={title} description={description} className={className}>
-      <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <RechartsRadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
-            <PolarGrid stroke="var(--vi-color-surface-border)" />
-            <PolarAngleAxis
-              dataKey={index}
-              tick={{ fill: "var(--vi-color-text-secondary)", fontSize: 12 }}
-            />
-            <PolarRadiusAxis
-              angle={90}
-              tick={{ fill: "var(--vi-color-text-secondary)", fontSize: 10 }}
-              axisLine={false}
-            />
-            {categories.map((category, i) => (
-              <Radar
-                key={category}
-                name={category}
-                dataKey={category}
-                stroke={colors[i % colors.length]}
-                fill={colors[i % colors.length]}
-                fillOpacity={0.2}
-                strokeWidth={2}
-              />
-            ))}
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "var(--vi-color-surface-card)",
-                borderColor: "var(--vi-color-surface-border)",
-                borderRadius: "8px",
-                color: "var(--vi-color-text-primary)",
-                boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)"
-              }}
-              itemStyle={{ color: "var(--vi-color-text-primary)" }}
-              formatter={(value: any, name: any) => [formatCompactNumber(value as number), name]}
-            />
-            <Legend
-              iconType="circle"
-              wrapperStyle={{ paddingTop: "20px", fontSize: "14px", color: "var(--vi-color-text-secondary)" }}
-            />
-          </RechartsRadarChart>
-        </ResponsiveContainer>
-      </div>
-    </WidgetCard>
+    <ChartCard {...card} height={card.height ?? 300} series={series} isEmpty={!props.data || props.data.length === 0} exportData={props.exportData ?? props.data}>
+      {(ctx) => <RadarPlot ctx={ctx} series={series} {...plot} />}
+    </ChartCard>
+  );
+}
+
+function RadarPlot({ ctx, data, index, series, seriesLabels, valueFormatter = DEFAULT_FORMATTER, max, fillOpacity = 0.18 }: Omit<RadarChartProps, CardKey> & { ctx: ChartContextValue; series: ReturnType<typeof buildSeries> }) {
+  const fs = ctx.settings.fontSize;
+  const labelMax = Math.max(48, Math.min(120, (ctx.width || 300) * 0.22));
+  const radius = ctx.settings.breakpoint === "xs" ? "62%" : "72%";
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <RechartsRadarChart cx="50%" cy="50%" outerRadius={radius} data={data} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+        <PolarGrid stroke={chartVars.grid} />
+        <PolarAngleAxis dataKey={index} tick={{ fill: chartVars.axisText, fontSize: fs, fontFamily: chartVars.fontBody }} tickFormatter={(v: any) => truncateToWidth(String(v), labelMax, fs)} />
+        <PolarRadiusAxis angle={90} domain={[0, max ?? "auto"]} tick={{ fill: chartVars.textMuted, fontSize: fs - 1 }} axisLine={false} tickFormatter={valueFormatter} tickCount={ctx.settings.breakpoint === "xs" ? 3 : 4} />
+        {series.map((s) => (
+          <Radar key={s.key} name={s.label} dataKey={s.key} stroke={s.color} fill={s.color} fillOpacity={ctx.hiddenSeries.has(s.key) ? 0 : fillOpacity * (ctx.highlightedSeries && ctx.highlightedSeries !== s.key ? 0.3 : 1)} strokeOpacity={seriesOpacity(s.key, ctx)} strokeWidth={ctx.settings.strokeWidth} hide={ctx.hiddenSeries.has(s.key)} dot={{ r: 2.5, strokeWidth: 0, fill: s.color }} {...animationProps(ctx)} />
+        ))}
+        <Tooltip content={rechartsTooltip({ valueFormatter, hidden: ctx.hiddenSeries, nameMap: seriesLabels })} />
+      </RechartsRadarChart>
+    </ResponsiveContainer>
   );
 }

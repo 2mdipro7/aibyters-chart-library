@@ -1,0 +1,27 @@
+{
+  "name": "host-smoke",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Consumer smoke test: renders the library in a plain Vite app with NO Tailwind, no global CSS reset and narrow grid cells. Build must succeed and screenshots must show no overlaps.",
+  "scripts": {
+    "dev": "vite --port 4174",
+    "build": "vite build",
+    "preview": "vite preview --port 4174",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@aibyters/charts-bi": "workspace:*",
+    "@aibyters/charts-ds": "workspace:*",
+    "@aibyters/charts-kpi": "workspace:*",
+    "@aibyters/layout": "workspace:*",
+    "@aibyters/spec": "workspace:*",
+    "@aibyters/theme": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.15.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^5.4.21"
+  }
+}

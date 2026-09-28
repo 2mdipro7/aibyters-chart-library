@@ -1,4 +1,3 @@
-import React from "react";
 import { WidgetCard } from "@aibyters/layout";
 import { formatCompactNumber } from "@aibyters/spec";
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from "react-simple-maps";

@@ -63,9 +63,21 @@ The library is a **monorepo** with several scoped packages. You can install only
 
 ### Step 1: Install Packages
 
-Since the packages are `private: true` (currently internal), you consume them via **path aliases** in your Vite config, or by building and linking them locally.
+Licensees install from the private registry (Option C, recommended). During evaluation you can consume the packages via **path aliases** in your Vite config, or by building and linking them locally.
 
-#### Option A — Path Aliases (Vite / Turborepo monorepo, recommended)
+#### Option C — Private registry (licensed)
+
+```ini
+# .npmrc
+@aibyters:registry=https://npm.your-registry.example/
+//npm.your-registry.example/:_authToken=${AIBYTERS_TOKEN}
+```
+
+```bash
+pnpm add @aibyters/theme @aibyters/layout @aibyters/charts-bi @aibyters/charts-kpi
+```
+
+#### Option A — Path Aliases (Vite / Turborepo monorepo, evaluation)
 
 If your project is already a monorepo, add the `aibyters` packages to your `pnpm-workspace.yaml`:
 
@@ -123,6 +135,8 @@ Each chart package requires these peer dependencies in **your project**:
 pnpm add react react-dom recharts
 ```
 
+React 18.2+ and 19 are supported.
+
 For geographic charts, also install:
 ```bash
 pnpm add leaflet react-leaflet react-simple-maps
@@ -137,11 +151,11 @@ The charts rely on CSS custom properties (design tokens) for all colors, spacing
 
 ```tsx
 // main.tsx or App.tsx
-import '@aibyters/theme/dist/index.css';
+import '@aibyters/theme/styles.css';
 ```
 
-> [!IMPORTANT]
-> Without this CSS file, the charts will render without any styling (colors, spacing, etc.).
+> [!NOTE]
+> The stylesheet only contains scoped global styles (focus rings, print, reduced motion). Colours, spacing and fonts are CSS variables supplied by `ThemeProvider`, and every component carries literal fallbacks, so charts remain readable even if the stylesheet is missing. Tailwind is **not** required.
 
 ---
 
@@ -154,7 +168,7 @@ import '@aibyters/theme/dist/index.css';
 
 export default function App() {
   return (
-    <ThemeProvider defaultTheme="dark">
+    <ThemeProvider theme="system" unstyled>
       {/* your app */}
     </ThemeProvider>
   );

@@ -54,6 +54,7 @@ export const colors = {
     cardHover: "#334155", // slate-700
     border: "#334155", // slate-700
     borderLight: "#475569", // slate-600
+    grid: "#334155", // chart gridlines (dark)
     overlay: "rgba(0,0,0,0.6)",
   },
 
@@ -61,7 +62,29 @@ export const colors = {
   text: {
     primary: "#f8fafc", // slate-50
     secondary: "#94a3b8", // slate-400
+    tertiary: "#64748b", // slate-500 (alias kept for hosts that already use it)
     muted: "#64748b", // slate-500
     inverse: "#0f172a", // slate-900
   },
+
+  // === SEMANTIC ALIASES (stable names for host overrides) ===
+  semantic: {
+    success: "#22c55e",
+    warning: "#eab308",
+    danger: "#ef4444",
+    info: "#3b82f6",
+  },
+
+  /** Primary brand colour used for single-series marks, focus rings and selected states. */
+  primary: "#6366f1",
+} as const;
+
+/**
+ * Sequential and diverging ramps for heatmaps, choropleths and matrices.
+ * Ordered light -> dark (sequential) and negative -> neutral -> positive (diverging).
+ */
+export const colorRamps = {
+  sequential: ["#eef2ff", "#c7d2fe", "#a5b4fc", "#818cf8", "#6366f1", "#4f46e5", "#3730a3"],
+  diverging: ["#ef4444", "#f59e0b", "#e2e8f0", "#22c55e", "#15803d"],
+  heat: ["#fef3c7", "#fde68a", "#f59e0b", "#ea580c", "#b91c1c"],
 } as const;

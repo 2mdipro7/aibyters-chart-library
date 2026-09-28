@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { WidgetCard } from "@aibyters/layout";
 import { formatCompactNumber } from "@aibyters/spec";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";

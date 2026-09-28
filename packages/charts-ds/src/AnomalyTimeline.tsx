@@ -1,114 +1,89 @@
-import React from "react";
-import {
-  ComposedChart,
-  Line,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend
-} from "recharts";
-import { WidgetCard } from "@aibyters/layout";
-import { formatCompactNumber } from "@aibyters/spec";
+import { ComposedChart, Line, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { ChartCard } from "@aibyters/layout";
+import { chartVars, rechartsTooltip, resolveColors, type BaseChartProps, type ChartContextValue, type SeriesDescriptor } from "@aibyters/core";
+import { DEFAULT_FORMATTER, animationProps, axisTick, gridProps, makeCategoryTick, seriesOpacity, splitCardProps, useCartesianLayout, type CardKey } from "./internal/cartesian";
 
-export interface AnomalyTimelineProps {
-  title: string;
-  description?: string;
+const ANOMALY_KEY = "_anomalyMarker";
+
+export interface AnomalyTimelineProps extends BaseChartProps {
   data: any[];
+  /** Key of the x-axis (time) field. */
   index: string;
+  /** Key of the metric field. */
   valueKey: string;
+  /** Boolean field marking a point as an anomaly. */
   anomalyKey: string;
-  colors?: string[];
-  valueFormatter?: (value: number) => string;
-  className?: string;
+  /** Human labels for the legend, e.g. `{ value: "CPU %", anomaly: "Spike" }`. Keys: the `valueKey` and `"anomaly"`. */
+  seriesLabels?: Record<string, string>;
+  onPointClick?: (datum: any) => void;
 }
 
-const defaultColors = [
-  "#6366f1",  // indigo
-  "#06b6d4",  // cyan
-  "#22c55e",  // green
-  "#f59e0b",  // amber
-  "#ef4444"   // red
-];
-
-export function AnomalyTimeline({
-  title,
-  description,
-  data,
-  index,
-  valueKey,
-  anomalyKey,
-  colors = defaultColors,
-  valueFormatter = formatCompactNumber,
-  className
-}: AnomalyTimelineProps) {
-  // Extract anomalies to a separate key that only exists when an anomaly is present
-  const transformedData = data.map(item => ({
-    ...item,
-    _anomalyMarker: item[anomalyKey] ? item[valueKey] : null
-  }));
-
+/**
+ * Time series with anomalies highlighted as markers on top of the line. The anomaly colour
+ * defaults to the theme's critical colour; pass two `colors` to override both.
+ */
+export function AnomalyTimeline(props: AnomalyTimelineProps) {
+  const [card, plot] = splitCardProps(props);
+  const palette = resolveColors(props.colors, 2);
+  const anomalyColor = props.colors && props.colors.length > 1 ? palette[1] : chartVars.negative;
+  const series: SeriesDescriptor[] = [
+    { key: props.valueKey, label: props.seriesLabels?.[props.valueKey] ?? "Metric Value", color: palette[0], shape: "line" },
+    { key: ANOMALY_KEY, label: props.seriesLabels?.anomaly ?? "Anomalies", color: anomalyColor, shape: "circle" },
+  ];
   return (
-    <WidgetCard title={title} description={description} className={className}>
-      <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={transformedData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <CartesianGrid 
-              strokeDasharray="3 3" 
-              vertical={false} 
-              stroke="var(--vi-color-surface-borderLight)" 
-            />
-            <XAxis 
-              dataKey={index} 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "var(--vi-color-text-secondary)", fontSize: 12 }}
-              dy={10}
-            />
-            <YAxis 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "var(--vi-color-text-secondary)", fontSize: 12 }}
-              tickFormatter={valueFormatter}
-            />
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: "var(--vi-color-surface-card)",
-                borderColor: "var(--vi-color-surface-border)",
-                borderRadius: "8px",
-                color: "var(--vi-color-text-primary)",
-                boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)"
-              }}
-              itemStyle={{ color: "var(--vi-color-text-primary)" }}
-              formatter={(value: any, name: string) => {
-                if (name === "_anomalyMarker") return [valueFormatter(value as number), "Anomaly Detected"];
-                return [valueFormatter(value as number), name];
-              }}
-            />
-            <Legend 
-              iconType="circle"
-              wrapperStyle={{ paddingTop: "20px", fontSize: "14px", color: "var(--vi-color-text-secondary)" }}
-            />
-            <Line
-              type="monotone"
-              dataKey={valueKey}
-              stroke={colors[0]}
-              strokeWidth={2}
-              dot={false}
-              name="Metric Value"
-            />
-            <Scatter 
-              name="Anomalies" 
-              dataKey="_anomalyMarker" 
-              fill={colors[1]} 
-              shape="circle" 
-              r={6} 
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
-    </WidgetCard>
+    <ChartCard {...card} series={series} isEmpty={!props.data || props.data.length === 0} exportData={props.exportData ?? props.data}>
+      {(ctx) => <AnomalyPlot ctx={ctx} series={series} {...plot} />}
+    </ChartCard>
+  );
+}
+
+function AnomalyPlot({ ctx, data, index, valueKey, anomalyKey, series, valueFormatter = DEFAULT_FORMATTER, labelFormatter, onPointClick }: Omit<AnomalyTimelineProps, CardKey> & { ctx: ChartContextValue; series: SeriesDescriptor[] }) {
+  const rows = data.map((item) => ({ ...item, [ANOMALY_KEY]: item[anomalyKey] ? item[valueKey] : null }));
+  const layout = useCartesianLayout(rows, [valueKey], index, valueFormatter, ctx, { labelFormatter });
+  const [line, anomaly] = series;
+  const r = ctx.isTouch ? 8 : 6;
+  const nameMap = { [valueKey]: line.label, [ANOMALY_KEY]: anomaly.label };
+  const slot = layout.xAxis.angle === 0 ? Math.max(40, ((ctx.width || 600) - layout.yAxisWidth) / Math.max(1, rows.length)) : 90;
+  const anomalyOpacity = seriesOpacity(ANOMALY_KEY, ctx);
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <ComposedChart data={rows} margin={{ ...layout.margin, top: 12 }}>
+        <CartesianGrid {...gridProps} vertical={false} />
+        <XAxis dataKey={index} axisLine={false} tickLine={false} interval={layout.xAxis.interval} height={layout.xAxis.height} tick={makeCategoryTick(layout.fontSize, layout.xAxis.angle, slot)} tickFormatter={labelFormatter as any} minTickGap={4} />
+        <YAxis axisLine={false} tickLine={false} width={layout.yAxisWidth} tick={axisTick(layout.fontSize)} tickFormatter={valueFormatter} tickCount={layout.tickCount} domain={["auto", "auto"]} />
+        <Tooltip content={rechartsTooltip({ valueFormatter, hidden: ctx.hiddenSeries, nameMap, labelFormatter })} cursor={{ stroke: chartVars.axisLine }} />
+        <Line
+          type="monotone"
+          dataKey={valueKey}
+          name={line.label}
+          stroke={line.color}
+          strokeWidth={ctx.settings.strokeWidth}
+          strokeOpacity={seriesOpacity(valueKey, ctx)}
+          hide={ctx.hiddenSeries.has(valueKey)}
+          dot={false}
+          activeDot={{ r: ctx.settings.dotRadius, strokeWidth: 0, onClick: (_: any, p: any) => onPointClick?.(p?.payload) }}
+          connectNulls
+          {...animationProps(ctx)}
+        />
+        <Scatter
+          dataKey={ANOMALY_KEY}
+          name={anomaly.label}
+          fill={anomaly.color}
+          hide={ctx.hiddenSeries.has(ANOMALY_KEY)}
+          shape={(p: any) => {
+            if (p.payload?.[ANOMALY_KEY] === null || p.payload?.[ANOMALY_KEY] === undefined) return <g />;
+            return (
+              <g opacity={anomalyOpacity} onClick={() => onPointClick?.(p.payload)} style={{ cursor: onPointClick ? "pointer" : undefined }}>
+                {/* invisible hit area keeps the touch target at 44px */}
+                <circle cx={p.cx} cy={p.cy} r={22} fill="transparent" />
+                <circle cx={p.cx} cy={p.cy} r={r + 3} fill={anomaly.color} fillOpacity={0.25} />
+                <circle cx={p.cx} cy={p.cy} r={r} fill={anomaly.color} stroke={chartVars.surface} strokeWidth={1.5} />
+              </g>
+            );
+          }}
+          {...animationProps(ctx)}
+        />
+      </ComposedChart>
+    </ResponsiveContainer>
   );
 }

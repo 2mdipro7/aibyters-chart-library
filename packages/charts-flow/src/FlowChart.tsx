@@ -93,7 +93,7 @@ export function FlowChart({
   className,
   onNodeClick,
 }: FlowChartProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(template.nodes);
+  const [nodes, , onNodesChange] = useNodesState(template.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(template.edges);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
 
@@ -118,7 +118,7 @@ export function FlowChart({
 
   const onConnect = useCallback(
     (params: Connection | Edge) => {
-      setEdges((eds) => addEdge({ ...params, type: 'smoothstep', style: { stroke: '#4A5F52', strokeWidth: 2 } }, eds));
+      setEdges((eds) => addEdge({ ...(params as Connection), type: 'smoothstep', style: { stroke: 'var(--vi-color-surface-border, #4A5F52)', strokeWidth: 2 } } as Edge, eds));
     },
     [setEdges],
   );

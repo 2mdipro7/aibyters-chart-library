@@ -1,46 +1,70 @@
 # AI Byters Visual Intelligence Library
 
-Welcome to the AI Byters Visual Intelligence Library frontend playground. 
+Enterprise-grade React chart and dashboard components that drop into **any** platform:
+no CSS framework required, themed entirely through CSS variables, responsive from 320 px phones
+to wall displays, accessible, SSR-safe, and free of runtime network calls.
 
-## Project Progress
+**60+ components** across seven packages:
 
-We have successfully built out **48 visualization components** across 6 core categories. This serves as the headless React foundation that will eventually be embedded into Frappe.
+| Package | Contents |
+|---|---|
+| `@aibyters/charts-kpi` | Metric, Delta, Target, Sparkline, Severity, Progress cards, **MetricStrip** |
+| `@aibyters/charts-bi` | Line, Area, Stacked Area, Bar, Column, Combo, Pie, Donut, Radar, Radial Bar, Scatter, Bubble, Treemap, Sankey, Funnel, Waterfall, Gauge, Bullet, Polar Area, Timeline, Data Table, Matrix Table, SWOT, PESTLE, Risk Matrix, Competitive Positioning, **Ranked Bar, Waffle, Diverging Bar, Progress Ring Group, Composition Band, Dumbbell, Lollipop, Pareto, Slope, Paired Bar, Status Strip** |
+| `@aibyters/charts-ds` | Forecast Band, Anomaly Timeline, Histogram, Box Plot, Violin, Heatmap, Control Chart, Candlestick, Volcano |
+| `@aibyters/charts-geo` | Choropleth, Bubble Map, Connection Map, Tile Map |
+| `@aibyters/charts-network` | Network Graph, Dependency Tree, Chord Diagram |
+| `@aibyters/charts-ai` | Insight Card, Recommendation Card |
+| `@aibyters/charts-flow` / `charts-infographics` | Flow diagrams and showcase infographics |
+| `@aibyters/layout`, `@aibyters/theme`, `@aibyters/core`, `@aibyters/spec`, `@aibyters/tokens` | Card/grid layout, theming, chart primitives, formatters, design tokens |
 
-### Completed Categories
-- **KPI Cards (6)**: Metric, Delta, Target, Sparkline, Severity, Progress
-- **Business Intelligence (26)**: Line, Area, Bar, Column, Combo, Funnel, Data Table, Waterfall, Matrix, Pie, Donut, Radar, Scatter, Bubble, Treemap, Sankey, Radial Bar, Stacked Area, Gauge, Timeline, Bullet, Polar Area
-  - **Strategic Frameworks (New!)**: Competitive Matrix, SWOT Analysis, Risk Matrix, PESTLE Analysis
-- **Data Science (6)**: Forecast Band, Anomaly Timeline, Histogram, Box Plot, Heatmap, Control Chart, Violin Plot, Candlestick
-- **Geospatial (4)**: Choropleth Map, Bubble Map, Connection Map
-- **Network (3)**: Network Graph, Dependency Tree, Chord Diagram
-- **AI Intelligence (2)**: Insight Card, Recommendation Card
+## Why it does not overlap, clip or break in your app
 
-### Integration Guide
+Every chart renders through `ChartCard` → `ChartFrame` (`@aibyters/core`):
 
-For full instructions on how to install and integrate these components into your own React projects, please read the **[Installation Guide (INSTALL.md)](./INSTALL.md)**.
+- the **legend is HTML outside the SVG**, so it never steals plot height or spills into the next widget;
+- **axis widths are measured** from the formatted ticks, so `$1.2M` is never clipped;
+- **category labels rotate or thin out** based on the real slot width;
+- **data labels are drawn only when they fit** (pie labels are placed outside with leader lines and collision resolution);
+- **breakpoints come from the container width**, not the viewport, with touch-size targets and reduced-motion support;
+- **no Tailwind, no fonts, no telemetry** — inline styles + `--vi-*` variables with literal fallbacks.
 
-### Local Development
+See [docs/ADOPTION.md](./docs/ADOPTION.md) for integration, [docs/AUDIT.md](./docs/AUDIT.md) for
+the findings that drove this design, and [INSTALL.md](./INSTALL.md) for a quick start.
 
-To run the local playground and view the entire component catalog:
+## Quick start
 
-1. Install dependencies:
-   ```bash
-   pnpm install
-   ```
-2. Start the Vite dev server for the playground:
-   ```bash
-   cd apps/playground
-   pnpm run dev
-   ```
-   *Note: Ensure you are running the `dev` script directly from the `apps/playground` directory to take advantage of Turborepo's workspace aliasing, which allows hot-reloading across packages.*
+```tsx
+import "@aibyters/theme/styles.css";
+import { ThemeProvider } from "@aibyters/theme";
+import { MetricStrip } from "@aibyters/charts-kpi";
+import { LineChart, DonutChart, RankedBarChart } from "@aibyters/charts-bi";
+import { Grid } from "@aibyters/layout";
 
-3. Open your browser to `http://localhost:5173`.
+export function Dashboard() {
+  return (
+    <ThemeProvider theme="system" unstyled>
+      <Grid columns={3} minColumnWidth={320}>
+        <LineChart title="AUM by region" data={rows} index="month" categories={["NA", "EMEA", "APAC"]} valueFormatter={usd} />
+        <DonutChart title="Holdings outcome" data={outcomes} dataKey="count" nameKey="status" centerValue="595" centerLabel="need review" legend={{ position: "right" }} />
+        <RankedBarChart title="Which assets account for the gap?" data={assetGaps} valueFormatter={usd} highlightTop={3} />
+      </Grid>
+    </ThemeProvider>
+  );
+}
+```
 
-### Architecture
+## Development
 
-- **`apps/playground`**: Vite + React dev environment for browsing the visual library.
-- **`packages/charts-*`**: Domain-specific headless visual components using Recharts, D3, and native SVG.
-- **`packages/layout`**: Dashboard layout components like Widget Cards.
-- **`packages/spec`**: Core data formats (DataFrame, ChartSpec).
+```bash
+pnpm install
+pnpm dev            # playground at http://localhost:5173 (includes /#/lab/responsive)
+pnpm typecheck      # all packages from source
+pnpm test           # unit tests (label collision, axis sizing, scales, formatters)
+pnpm build          # ES + CJS + d.ts for every package, topological order
+pnpm build:playground && pnpm test:visual   # screenshots at 360/768/1280 px
+```
 
-All charts use a standard `WidgetCard` wrapper from `@aibyters/layout` and are styled globally using Tailwind CSS variables to support rapid theming.
+## Licensing
+
+Proprietary — see [LICENSE](./LICENSE). Commercial terms, the licensee questionnaire and the pricing
+model are in [docs/commercial](./docs/commercial). Release procedure: [docs/RELEASING.md](./docs/RELEASING.md).

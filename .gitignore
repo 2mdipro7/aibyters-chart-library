@@ -16,3 +16,9 @@ context/
 *.ps1
 debug.js
 logo/
+# build outputs (dist is listed above)
+*.tsbuildinfo
+storybook-static
+
+# visual regression screenshots (scripts/visual-check.mjs)
+visual/

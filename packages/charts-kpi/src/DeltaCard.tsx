@@ -1,57 +1,29 @@
-import React from "react";
 import { WidgetCard } from "@aibyters/layout";
-import { formatCompactNumber, formatCurrency, formatPercent, formatDelta } from "@aibyters/spec";
+import { containerStyle, DeltaBadge, fmt, Skeleton, valueStyle, tone, type KpiBaseProps, type KpiFormat } from "./internal/kpi";
 
-export interface DeltaCardProps {
-  title: string;
+export interface DeltaCardProps extends KpiBaseProps {
   value: number;
-  delta: number; // e.g. 0.05 for 5% increase
-  format?: "number" | "currency" | "percent";
-  description?: string;
-  invertColors?: boolean; // If true, positive is red, negative is green (e.g. churn rate)
-  className?: string;
+  /** Relative change as a fraction, e.g. 0.05 = +5%. */
+  delta: number;
+  format?: KpiFormat;
+  /** Treat a decrease as good (churn, cost, latency). */
+  invertColors?: boolean;
+  /** Text after the badge, e.g. "vs last month". */
+  deltaLabel?: string;
+  /** Previous value, shown under the delta when provided. */
+  previousValue?: number;
 }
 
-export function DeltaCard({
-  title,
-  value,
-  delta,
-  format = "number",
-  description,
-  invertColors = false,
-  className,
-}: DeltaCardProps) {
-  let displayValue = String(value);
-  if (format === "number") displayValue = formatCompactNumber(value);
-  if (format === "currency") displayValue = formatCurrency(value);
-  if (format === "percent") displayValue = formatPercent(value);
-
-  const isPositive = delta > 0;
-  const isNegative = delta < 0;
-  const isNeutral = delta === 0;
-
-  // Semantic color logic
-  let deltaColorClass = "text-[var(--vi-color-text-secondary)]";
-  if (isPositive) {
-    deltaColorClass = invertColors ? "text-[var(--vi-color-semantic-danger)]" : "text-[var(--vi-color-semantic-success)]";
-  } else if (isNegative) {
-    deltaColorClass = invertColors ? "text-[var(--vi-color-semantic-success)]" : "text-[var(--vi-color-semantic-danger)]";
-  }
-
-  const deltaText = formatDelta(delta);
-
+export function DeltaCard({ title, description, value, delta, format = "number", invertColors = false, deltaLabel, previousValue, className, style, variant, headerAction, footer, size, loading, ...f }: DeltaCardProps) {
   return (
-    <WidgetCard title={title} description={description} className={className}>
-      <div className="flex flex-col justify-center h-full space-y-2">
-        <div className="text-4xl font-bold text-[var(--vi-color-text-primary)]">
-          {displayValue}
+    <WidgetCard title={title} description={description} className={className} style={style} variant={variant} headerAction={headerAction} footer={footer}>
+      <div style={containerStyle} className="vi-kpi">
+        {loading ? <Skeleton /> : <span className="vi-kpi-value" style={valueStyle(size)}>{fmt(value, format, f)}</span>}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <DeltaBadge delta={delta} invert={invertColors} />
+          {deltaLabel && <span style={{ fontSize: 12, color: tone.neutral }}>{deltaLabel}</span>}
         </div>
-        <div className={`flex items-center text-sm font-semibold ${deltaColorClass}`}>
-          {isPositive && <span className="mr-1">↑</span>}
-          {isNegative && <span className="mr-1">↓</span>}
-          {isNeutral && <span className="mr-1">−</span>}
-          {deltaText}
-        </div>
+        {previousValue !== undefined && <div style={{ fontSize: 12, color: tone.muted }}>Previous: {fmt(previousValue, format, f)}</div>}
       </div>
     </WidgetCard>
   );

@@ -73,6 +73,21 @@ import FlowDiagramPage from './pages/flow/FlowDiagramPage';
 // Infographics Pages
 import InfographicsShowcasePage from './pages/infographics/InfographicsShowcasePage';
 
+// Reconciliation dashboard additions
+import RankedBarChartPage from './pages/bi/RankedBarChartPage';
+import WaffleChartPage from './pages/bi/WaffleChartPage';
+import DivergingBarChartPage from './pages/bi/DivergingBarChartPage';
+import ProgressRingGroupPage from './pages/bi/ProgressRingGroupPage';
+import CompositionBandChartPage from './pages/bi/CompositionBandChartPage';
+import DumbbellChartPage from './pages/bi/DumbbellChartPage';
+import LollipopChartPage from './pages/bi/LollipopChartPage';
+import ParetoChartPage from './pages/bi/ParetoChartPage';
+import SlopeChartPage from './pages/bi/SlopeChartPage';
+import PairedBarChartPage from './pages/bi/PairedBarChartPage';
+import StatusStripChartPage from './pages/bi/StatusStripChartPage';
+import MetricStripPage from './pages/kpi/MetricStripPage';
+import ResponsiveLab from './pages/ResponsiveLab';
+
 export default function App() {
   const [search, setSearch] = useState('');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -159,6 +174,21 @@ export default function App() {
 
               {/* Infographics */}
               <Route path="/infographics/showcase" element={<InfographicsShowcasePage />} />
+
+              {/* Reconciliation dashboard additions */}
+              <Route path="/bi/rankedbar" element={<RankedBarChartPage />} />
+              <Route path="/bi/waffle" element={<WaffleChartPage />} />
+              <Route path="/bi/divergingbar" element={<DivergingBarChartPage />} />
+              <Route path="/bi/progressrings" element={<ProgressRingGroupPage />} />
+              <Route path="/bi/compositionband" element={<CompositionBandChartPage />} />
+              <Route path="/bi/dumbbell" element={<DumbbellChartPage />} />
+              <Route path="/bi/lollipop" element={<LollipopChartPage />} />
+              <Route path="/bi/pareto" element={<ParetoChartPage />} />
+              <Route path="/bi/slope" element={<SlopeChartPage />} />
+              <Route path="/bi/pairedbar" element={<PairedBarChartPage />} />
+              <Route path="/bi/statusstrip" element={<StatusStripChartPage />} />
+              <Route path="/kpi/metricstrip" element={<MetricStripPage />} />
+              <Route path="/lab/responsive" element={<ResponsiveLab />} />
             </Routes>
           </div>
         </main>

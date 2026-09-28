@@ -1,4 +1,3 @@
-import React from "react";
 import { WidgetCard } from "@aibyters/layout";
 
 export interface PestleAnalysisCardProps {
@@ -23,12 +22,12 @@ export function PestleAnalysisCard({
 }: PestleAnalysisCardProps) {
   
   const factors = [
-    { id: "political", title: "Political", items: data.political, color: "#ef4444" },
-    { id: "economic", title: "Economic", items: data.economic, color: "#f59e0b" },
-    { id: "sociocultural", title: "Sociocultural", items: data.sociocultural, color: "#8b5cf6" },
-    { id: "technological", title: "Technological", items: data.technological, color: "#06b6d4" },
-    { id: "legal", title: "Legal", items: data.legal, color: "#6366f1" },
-    { id: "environmental", title: "Environmental", items: data.environmental, color: "#22c55e" },
+    { id: "political", title: "Political", items: data.political, color: "var(--vi-color-chart-4, #ef4444)" },
+    { id: "economic", title: "Economic", items: data.economic, color: "var(--vi-color-chart-3, #f59e0b)" },
+    { id: "sociocultural", title: "Sociocultural", items: data.sociocultural, color: "var(--vi-color-chart-5, #a855f7)" },
+    { id: "technological", title: "Technological", items: data.technological, color: "var(--vi-color-chart-1, #06b6d4)" },
+    { id: "legal", title: "Legal", items: data.legal, color: "var(--vi-color-chart-0, #6366f1)" },
+    { id: "environmental", title: "Environmental", items: data.environmental, color: "var(--vi-color-chart-2, #22c55e)" },
   ];
 
   return (

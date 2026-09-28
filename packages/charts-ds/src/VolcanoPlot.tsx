@@ -1,143 +1,137 @@
-import React, { useMemo } from 'react';
-import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  ReferenceLine,
-  Legend
-} from 'recharts';
-import { WidgetCard } from '@aibyters/layout';
-import { formatCompactNumber } from '@aibyters/spec';
+import { useMemo } from "react";
+import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import { ChartCard } from "@aibyters/layout";
+import { ChartTooltip, chartVars, computeAxisWidth, type BaseChartProps, type ChartContextValue, type SeriesDescriptor } from "@aibyters/core";
+import { splitCardProps, axisTick, gridProps, type CardKey } from "./internal/cartesian";
 
 export interface VolcanoPlotDataPoint {
   id: string;
-  x: number; // Log2 Fold Change
-  y: number; // -Log10 Adjusted P-value
+  /** Log2 fold change. */
+  x: number;
+  /** -Log10 adjusted p-value. */
+  y: number;
   name?: string;
   [key: string]: any;
 }
 
-export interface VolcanoPlotProps {
-  title: string;
-  description?: string;
+export type VolcanoCategory = "up" | "down" | "ns";
+
+export interface VolcanoPlotProps extends Omit<BaseChartProps, "colors"> {
   data: VolcanoPlotDataPoint[];
-  pThreshold?: number; // e.g., 1.3 for p=0.05 (-log10(0.05))
-  fcThreshold?: number; // e.g., 1.0 for Log2FC = 1 (2-fold change)
-  colors?: {
-    up: string;
-    down: string;
-    ns: string;
-  };
+  /** Significance threshold on the y-axis, e.g. 1.3 for p = 0.05. Default 1.3. */
+  pThreshold?: number;
+  /** Fold-change threshold on the x-axis (absolute Log2FC). Default 1. */
+  fcThreshold?: number;
+  /** Colours per category. Default: critical (up), info (down), muted (ns). */
+  colors?: Partial<Record<VolcanoCategory, string>>;
+  /** Legend labels per category. Default `{ up: "Up", down: "Down", ns: "NS" }`. */
+  seriesLabels?: Partial<Record<VolcanoCategory, string>>;
   xAxisLabel?: string;
   yAxisLabel?: string;
-  className?: string;
+  xFormatter?: (v: number) => string;
+  yFormatter?: (v: number) => string;
+  onPointClick?: (point: VolcanoPlotDataPoint) => void;
 }
 
-const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    return (
-      <div style={{
-        background: 'var(--vi-color-surface-card)',
-        border: '1px solid var(--vi-color-surface-borderLight)',
-        padding: '12px',
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-      }}>
-        <p style={{ fontWeight: 600, margin: '0 0 8px 0', color: 'var(--vi-color-text-primary)' }}>
-          {data.name || data.id}
-        </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
-            <span style={{ color: 'var(--vi-color-text-secondary)' }}>Log2 FC:</span>
-            <span style={{ fontWeight: 500, color: 'var(--vi-color-text-primary)' }}>{data.x.toFixed(3)}</span>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
-            <span style={{ color: 'var(--vi-color-text-secondary)' }}>-Log10 P-val:</span>
-            <span style={{ fontWeight: 500, color: 'var(--vi-color-text-primary)' }}>{data.y.toFixed(3)}</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  return null;
-};
+const DEFAULT_LABELS: Record<VolcanoCategory, string> = { up: "Up", down: "Down", ns: "NS" };
+const ORDER: VolcanoCategory[] = ["down", "ns", "up"];
 
-export function VolcanoPlot({
-  title,
-  description,
+function categorise(data: VolcanoPlotDataPoint[], pThreshold: number, fcThreshold: number): Record<VolcanoCategory, VolcanoPlotDataPoint[]> {
+  const out: Record<VolcanoCategory, VolcanoPlotDataPoint[]> = { up: [], down: [], ns: [] };
+  for (const p of data ?? []) {
+    if (p.y >= pThreshold && p.x >= fcThreshold) out.up.push(p);
+    else if (p.y >= pThreshold && p.x <= -fcThreshold) out.down.push(p);
+    else out.ns.push(p);
+  }
+  return out;
+}
+
+/** Significance vs fold change scatter used for differential expression analysis. */
+export function VolcanoPlot(props: VolcanoPlotProps) {
+  const [card, plot] = splitCardProps(props);
+  const colors: Record<VolcanoCategory, string> = { up: chartVars.negative, down: chartVars.info, ns: chartVars.textMuted, ...props.colors };
+  const labels = { ...DEFAULT_LABELS, ...props.seriesLabels };
+  const series: SeriesDescriptor[] = (["up", "down", "ns"] as VolcanoCategory[]).map((k) => ({ key: k, label: labels[k], color: colors[k], shape: "circle" }));
+  return (
+    <ChartCard {...card} height={card.height ?? 360} series={series} isEmpty={!props.data || props.data.length === 0} exportData={props.exportData ?? props.data}>
+      {(ctx) => <VolcanoPlotBody ctx={ctx} series={series} resolvedColors={colors} {...plot} />}
+    </ChartCard>
+  );
+}
+
+function VolcanoPlotBody({
+  ctx,
   data,
   pThreshold = 1.3,
   fcThreshold = 1.0,
-  colors = { up: '#ef4444', down: '#3b82f6', ns: '#9ca3af' },
-  xAxisLabel = 'Log2 Fold Change',
-  yAxisLabel = '-Log10 Adjusted P-value',
-  className
-}: VolcanoPlotProps) {
-
-  const { upData, downData, nsData } = useMemo(() => {
-    const up: VolcanoPlotDataPoint[] = [];
-    const down: VolcanoPlotDataPoint[] = [];
-    const ns: VolcanoPlotDataPoint[] = [];
-
-    data.forEach(point => {
-      if (point.y >= pThreshold && point.x >= fcThreshold) {
-        up.push(point);
-      } else if (point.y >= pThreshold && point.x <= -fcThreshold) {
-        down.push(point);
-      } else {
-        ns.push(point);
-      }
-    });
-
-    return { upData: up, downData: down, nsData: ns };
-  }, [data, pThreshold, fcThreshold]);
+  series,
+  resolvedColors,
+  xAxisLabel = "Log2 Fold Change",
+  yAxisLabel = "-Log10 Adjusted P-value",
+  xFormatter,
+  yFormatter,
+  valueFormatter,
+  onPointClick,
+}: Omit<VolcanoPlotProps, CardKey> & { ctx: ChartContextValue; series: SeriesDescriptor[]; resolvedColors: Record<VolcanoCategory, string> }) {
+  const groups = useMemo(() => categorise(data, pThreshold, fcThreshold), [data, pThreshold, fcThreshold]);
+  const fx = xFormatter ?? valueFormatter ?? ((v: number) => (Math.round(v * 100) / 100).toString());
+  const fy = yFormatter ?? valueFormatter ?? ((v: number) => (Math.round(v * 100) / 100).toString());
+  const fs = ctx.settings.fontSize;
+  const yWidth = computeAxisWidth(data.map((d) => d.y), fy, { fontSize: fs, tickCount: ctx.settings.tickCount });
+  const r = ctx.isTouch ? 5 : ctx.settings.breakpoint === "xs" ? 2.5 : 3.5;
+  const area = Math.PI * r * r;
+  const animate = ctx.animate && data.length <= 500;
+  const byKey = Object.fromEntries(series.map((s) => [s.key, s])) as Record<VolcanoCategory, SeriesDescriptor>;
 
   return (
-    <WidgetCard title={title} description={description} className={className}>
-      <div style={{ width: '100%', height: 400 }}>
-        <ResponsiveContainer>
-          <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--vi-color-surface-borderLight)" vertical={false} />
-            
-            <XAxis 
-              type="number" 
-              dataKey="x" 
-              name="Log2 Fold Change" 
-              stroke="var(--vi-color-text-tertiary)"
-              tick={{ fill: 'var(--vi-color-text-secondary)', fontSize: 12 }}
-              label={{ value: xAxisLabel, position: 'bottom', fill: 'var(--vi-color-text-secondary)', fontSize: 13, offset: 0 }}
+    <ResponsiveContainer width="100%" height="100%">
+      <ScatterChart margin={{ top: 8, right: 16, bottom: xAxisLabel ? 18 : 4, left: 0 }}>
+        <CartesianGrid {...gridProps} />
+        <XAxis type="number" dataKey="x" name={xAxisLabel} axisLine={false} tickLine={false} tick={axisTick(fs)} tickFormatter={fx} tickCount={ctx.settings.tickCount} height={xAxisLabel ? 36 : 24} label={xAxisLabel ? { value: xAxisLabel, position: "insideBottom", offset: -4, fill: chartVars.axisText, fontSize: fs } : undefined} />
+        <YAxis type="number" dataKey="y" name={yAxisLabel} axisLine={false} tickLine={false} width={yWidth + (yAxisLabel ? 14 : 0)} tick={axisTick(fs)} tickFormatter={fy} tickCount={ctx.settings.tickCount} label={yAxisLabel ? { value: yAxisLabel, angle: -90, position: "insideLeft", fill: chartVars.axisText, fontSize: fs } : undefined} />
+        <ZAxis range={[area, area]} />
+        <Tooltip
+          cursor={{ strokeDasharray: "3 3", stroke: chartVars.axisLine }}
+          content={(p: any) => {
+            const d = p?.payload?.[0]?.payload as VolcanoPlotDataPoint | undefined;
+            if (!p?.active || !d) return null;
+            const cat: VolcanoCategory = d.y >= pThreshold && d.x >= fcThreshold ? "up" : d.y >= pThreshold && d.x <= -fcThreshold ? "down" : "ns";
+            return (
+              <ChartTooltip
+                title={d.name || d.id}
+                rows={[
+                  { key: "cat", label: "Category", value: byKey[cat].label, color: resolvedColors[cat] },
+                  { key: "x", label: xAxisLabel, value: fx(d.x) },
+                  { key: "y", label: yAxisLabel, value: fy(d.y) },
+                ]}
+              />
+            );
+          }}
+        />
+        <ReferenceLine x={-fcThreshold} stroke={chartVars.axisLine} strokeDasharray="3 3" />
+        <ReferenceLine x={fcThreshold} stroke={chartVars.axisLine} strokeDasharray="3 3" />
+        <ReferenceLine y={pThreshold} stroke={chartVars.axisLine} strokeDasharray="3 3" />
+        {ORDER.map((k) => {
+          const s = byKey[k];
+          const hidden = ctx.hiddenSeries.has(k);
+          const dim = ctx.highlightedSeries !== null && ctx.highlightedSeries !== k;
+          const base = k === "ns" ? 0.45 : 0.8;
+          return (
+            <Scatter
+              key={k}
+              name={s.label}
+              data={groups[k]}
+              fill={s.color}
+              fillOpacity={hidden ? 0 : dim ? base * 0.25 : base}
+              hide={hidden}
+              onClick={(d: any) => onPointClick?.(d?.payload ?? d)}
+              cursor={onPointClick ? "pointer" : undefined}
+              isAnimationActive={animate}
+              animationDuration={500}
             />
-            
-            <YAxis 
-              type="number" 
-              dataKey="y" 
-              name="-Log10 P-value" 
-              stroke="var(--vi-color-text-tertiary)"
-              tick={{ fill: 'var(--vi-color-text-secondary)', fontSize: 12 }}
-              label={{ value: yAxisLabel, angle: -90, position: 'insideLeft', fill: 'var(--vi-color-text-secondary)', fontSize: 13 }}
-            />
-            
-            <Tooltip 
-              content={<CustomTooltip />}
-              cursor={{ strokeDasharray: '3 3', stroke: 'var(--vi-color-surface-border)' }}
-            />
-            <Legend verticalAlign="top" height={36} iconType="circle" />
-
-            <ReferenceLine x={-fcThreshold} stroke="var(--vi-color-surface-border)" strokeDasharray="3 3" />
-            <ReferenceLine x={fcThreshold} stroke="var(--vi-color-surface-border)" strokeDasharray="3 3" />
-            <ReferenceLine y={pThreshold} stroke="var(--vi-color-surface-border)" strokeDasharray="3 3" />
-
-            <Scatter name="Down" data={downData} fill={colors.down} line={false} shape="circle" />
-            <Scatter name="NS" data={nsData} fill={colors.ns} fillOpacity={0.5} line={false} shape="circle" />
-            <Scatter name="Up" data={upData} fill={colors.up} line={false} shape="circle" />
-          </ScatterChart>
-        </ResponsiveContainer>
-      </div>
-    </WidgetCard>
+          );
+        })}
+      </ScatterChart>
+    </ResponsiveContainer>
   );
 }

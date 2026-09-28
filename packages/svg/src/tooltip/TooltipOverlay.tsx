@@ -1,4 +1,3 @@
-import React from "react";
 import { useTooltipStore } from "@aibyters/core";
 import { motion, AnimatePresence } from "framer-motion";
 

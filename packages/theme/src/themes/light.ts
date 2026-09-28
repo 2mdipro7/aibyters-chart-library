@@ -12,11 +12,13 @@ const lightColors = {
     cardHover: colors.slate[50],
     border: colors.slate[200],
     borderLight: colors.slate[100],
+    grid: colors.slate[200],
     overlay: "rgba(255,255,255,0.6)",
   },
   text: {
     primary: colors.slate[900],
     secondary: colors.slate[600],
+    tertiary: colors.slate[500],
     muted: colors.slate[500],
     inverse: colors.slate[50],
   },

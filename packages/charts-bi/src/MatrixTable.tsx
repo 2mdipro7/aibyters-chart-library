@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { WidgetCard } from '@aibyters/layout';
 import { formatCompactNumber } from '@aibyters/spec';
 
@@ -73,7 +73,7 @@ export function MatrixTable({
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
             <tr>
-              {columns.map((col, idx) => (
+              {columns.map((col) => (
                 <th key={col.key} style={{ padding: '12px 16px', borderBottom: '1px solid var(--vi-color-surface-border)', color: 'var(--vi-color-text-secondary)', fontWeight: 500, fontSize: 14 }}>
                   {col.header}
                 </th>

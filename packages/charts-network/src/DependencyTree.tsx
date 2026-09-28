@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { WidgetCard } from "@aibyters/layout";
 
 export interface DependencyTreeProps {
@@ -70,7 +70,7 @@ export function DependencyTree({
 
       let builtChildren: TreeNode[] | undefined;
       if (node.children) {
-        builtChildren = node.children.map((c: any, i: number) => {
+        builtChildren = node.children.map((c: any) => {
           // find this child's index in the global depth list
           const childLevelList = nodesByDepth[depth + 1];
           const childGlobalIndex = childLevelList.findIndex(x => x === c);

@@ -14,6 +14,22 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@aibyters/core": ["./packages/core/src/index.ts"],
+      "@aibyters/spec": ["./packages/spec/src/index.ts"],
+      "@aibyters/tokens": ["./packages/tokens/src/index.ts"],
+      "@aibyters/theme": ["./packages/theme/src/index.ts"],
+      "@aibyters/layout": ["./packages/layout/src/index.ts"],
+      "@aibyters/svg": ["./packages/svg/src/index.ts"],
+      "@aibyters/charts-bi": ["./packages/charts-bi/src/index.ts"],
+      "@aibyters/charts-ds": ["./packages/charts-ds/src/index.ts"],
+      "@aibyters/charts-kpi": ["./packages/charts-kpi/src/index.ts"],
+      "@aibyters/charts-ai": ["./packages/charts-ai/src/index.ts"],
+      "@aibyters/charts-geo": ["./packages/charts-geo/src/index.ts"],
+      "@aibyters/charts-network": ["./packages/charts-network/src/index.ts"],
+      "@aibyters/charts-flow": ["./packages/charts-flow/src/index.ts"],
+      "@aibyters/charts-infographics": ["./packages/charts-infographics/src/index.ts"]
+    }
   }
 }

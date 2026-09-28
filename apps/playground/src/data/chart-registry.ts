@@ -94,6 +94,20 @@ export const chartRegistry: ChartEntry[] = [
 
   // Infographics
   { id: 'infographics-showcase', name: 'Infographics Showcase', category: 'infographics', path: '/infographics/showcase', description: 'Collection of premium infographics', status: 'implemented' },
+  // BI Charts (reconciliation dashboard additions)
+  { id: 'rankedbar', name: 'Ranked Bar Chart', category: 'bi', path: '/bi/rankedbar', description: 'Ranked track + fill list with values', status: 'implemented' },
+  { id: 'waffle', name: 'Waffle Chart', category: 'bi', path: '/bi/waffle', description: '10x10 unit grid of shares', status: 'implemented' },
+  { id: 'divergingbar', name: 'Diverging Bar Chart', category: 'bi', path: '/bi/divergingbar', description: 'Two-sided bars around zero', status: 'implemented' },
+  { id: 'progressrings', name: 'Progress Ring Group', category: 'bi', path: '/bi/progressrings', description: 'Row of small share rings', status: 'implemented' },
+  { id: 'compositionband', name: 'Composition Band Chart', category: 'bi', path: '/bi/compositionband', description: 'Single 100% stacked band with key', status: 'implemented' },
+  { id: 'dumbbell', name: 'Dumbbell Chart', category: 'bi', path: '/bi/dumbbell', description: 'Two connected dots per category', status: 'implemented' },
+  { id: 'lollipop', name: 'Lollipop Chart', category: 'bi', path: '/bi/lollipop', description: 'Stem + head ranked bars', status: 'implemented' },
+  { id: 'pareto', name: 'Pareto Chart', category: 'bi', path: '/bi/pareto', description: 'Sorted bars + cumulative % line', status: 'implemented' },
+  { id: 'slope', name: 'Slope Chart', category: 'bi', path: '/bi/slope', description: 'Two-period lines per entity', status: 'implemented' },
+  { id: 'pairedbar', name: 'Paired Bar Chart', category: 'bi', path: '/bi/pairedbar', description: 'Two bars per row with delta', status: 'implemented' },
+  { id: 'statusstrip', name: 'Status Strip Chart', category: 'bi', path: '/bi/statusstrip', description: 'Timeline of status cells', status: 'implemented' },
+  { id: 'responsive-lab', name: 'Responsive Lab', category: 'bi', path: '/lab/responsive', description: 'Charts at 320 / 480 / 720 / fluid widths', status: 'implemented' },
+  { id: 'metricstrip', name: 'Metric Strip', category: 'kpi', path: '/kpi/metricstrip', description: 'Responsive row of KPI tiles', status: 'implemented' },
 ];
 
 export function getChartsByCategory(category: string): ChartEntry[] {

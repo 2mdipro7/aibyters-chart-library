@@ -1,110 +1,79 @@
-import React, { useMemo } from 'react';
-import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { WidgetCard } from '@aibyters/layout';
-import { formatCompactNumber } from '@aibyters/spec';
+import { useMemo } from "react";
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList, ReferenceLine } from "recharts";
+import { ChartCard } from "@aibyters/layout";
+import { chartVars, rechartsTooltip, type BaseChartProps, type ChartContextValue, type SeriesDescriptor } from "@aibyters/core";
+import { DEFAULT_FORMATTER, animationProps, axisTick, gridProps, makeBarLabel, makeCategoryTick, resolveLabelMode, splitCardProps, useCartesianLayout, type CardKey } from "./internal/cartesian";
 
-export interface WaterfallChartProps {
-  title: string;
-  description?: string;
-  data: Array<{ name: string; value: number }>;
-  colors?: { increase: string; decrease: string; total: string };
-  valueFormatter?: (value: number) => string;
-  className?: string;
+export interface WaterfallDatum {
+  name: string;
+  value: number;
+  /** Mark this bar as a subtotal / total drawn from zero. Auto-detected for the last row named "Total". */
+  isTotal?: boolean;
 }
 
-export function WaterfallChart({
-  title,
-  description,
-  data,
-  colors = { increase: '#22c55e', decrease: '#ef4444', total: '#6366f1' },
-  valueFormatter = formatCompactNumber,
-  className
-}: WaterfallChartProps) {
-  
-  const rechartsData = useMemo(() => {
-    let runningTotal = 0;
-    return data.map((item, index) => {
-      const isTotal = index === data.length - 1 && item.name.toLowerCase() === 'total';
-      
-      if (isTotal) {
-        return {
-          name: item.name,
-          base: 0,
-          valueBar: item.value,
-          actualValue: item.value,
-          color: colors.total,
-        };
-      }
-      
-      const start = runningTotal;
-      const end = start + item.value;
-      runningTotal = end;
-      
-      const base = Math.min(start, end);
-      const valueBar = Math.abs(item.value);
-      
-      return {
-        name: item.name,
-        base: base,
-        valueBar: valueBar,
-        actualValue: item.value,
-        color: item.value >= 0 ? colors.increase : colors.decrease,
-      };
-    });
-  }, [data, colors]);
+export interface WaterfallChartProps extends BaseChartProps {
+  data: WaterfallDatum[];
+  colors?: string[];
+  /** Colours for increase / decrease / total bars. Override via theme vars `--vi-color-positive-main` etc. */
+  semanticColors?: { increase?: string; decrease?: string; total?: string };
+  /** Draw connector lines between bars. Default true. */
+  connectors?: boolean;
+}
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div style={{
-          backgroundColor: 'var(--vi-color-surface-card)',
-          borderColor: 'var(--vi-color-surface-border)',
-          borderWidth: 1,
-          borderStyle: 'solid',
-          borderRadius: '8px',
-          padding: '8px 12px',
-          color: 'var(--vi-color-text-primary)',
-          boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
-        }}>
-          <p style={{ margin: '0 0 4px 0', fontWeight: 500 }}>{label}</p>
-          <p style={{ margin: 0, color: data.color }}>
-            Value: {valueFormatter(data.actualValue)}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
+export function WaterfallChart(props: WaterfallChartProps) {
+  const [card, plot] = splitCardProps(props);
+  const c = { increase: chartVars.positive, decrease: chartVars.negative, total: chartVars.accent, ...props.semanticColors };
+  const series: SeriesDescriptor[] = [
+    { key: "increase", label: "Increase", color: c.increase, shape: "square" },
+    { key: "decrease", label: "Decrease", color: c.decrease, shape: "square" },
+    { key: "total", label: "Total", color: c.total, shape: "square" },
+  ];
   return (
-    <WidgetCard title={title} description={description} className={className}>
-      <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <RechartsBarChart data={rechartsData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--vi-color-surface-border)" />
-            <XAxis 
-              dataKey="name" 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "var(--vi-color-text-secondary)", fontSize: 12 }}
-            />
-            <YAxis 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "var(--vi-color-text-secondary)", fontSize: 12 }}
-              tickFormatter={valueFormatter}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="base" stackId="a" fill="transparent" />
-            <Bar dataKey="valueBar" stackId="a" radius={[4, 4, 4, 4]}>
-              {rechartsData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Bar>
-          </RechartsBarChart>
-        </ResponsiveContainer>
-      </div>
-    </WidgetCard>
+    <ChartCard {...card} legend={card.legend ?? { interactive: false }} series={series} isEmpty={!props.data || props.data.length === 0} exportData={props.exportData ?? props.data}>
+      {(ctx) => <WaterfallPlot ctx={ctx} colorsMap={c} {...plot} />}
+    </ChartCard>
+  );
+}
+
+function WaterfallPlot({ ctx, data, valueFormatter = DEFAULT_FORMATTER, labelFormatter, dataLabels, connectors = true, colorsMap }: Omit<WaterfallChartProps, CardKey> & { ctx: ChartContextValue; colorsMap: { increase: string; decrease: string; total: string } }) {
+  const rows = useMemo(() => {
+    let running = 0;
+    return data.map((item, i) => {
+      const isTotal = item.isTotal ?? (i === data.length - 1 && /total|net|end/i.test(item.name));
+      if (isTotal) {
+        const v = item.value;
+        running = v;
+        return { name: item.name, base: Math.min(0, v), bar: Math.abs(v), actual: v, kind: "total" as const, prevEnd: v };
+      }
+      const start = running;
+      const end = start + item.value;
+      running = end;
+      return { name: item.name, base: Math.min(start, end), bar: Math.abs(item.value), actual: item.value, kind: item.value >= 0 ? ("increase" as const) : ("decrease" as const), prevEnd: end };
+    });
+  }, [data]);
+  const layout = useCartesianLayout(rows, ["prevEnd", "base"], "name", valueFormatter, ctx, { labelFormatter, dataLabels: true });
+  const labelMode = resolveLabelMode(dataLabels, "auto");
+  const fmtSigned = (v: number) => (v > 0 ? "+" : "") + valueFormatter(v);
+  const slot = Math.max(40, ((ctx.width || 600) - layout.yAxisWidth) / Math.max(1, rows.length));
+  const barLabel = makeBarLabel(labelMode.formatter ?? fmtSigned, labelMode.fontSize, labelMode.mode, "vertical", labelMode.minMarkSize, "outside", slot);
+  const totalLabel = makeBarLabel(labelMode.formatter ?? valueFormatter, labelMode.fontSize, labelMode.mode, "vertical", labelMode.minMarkSize, "outside", slot);
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <RechartsBarChart data={rows} margin={layout.margin} barCategoryGap="30%">
+        <CartesianGrid {...gridProps} vertical={false} />
+        <XAxis dataKey="name" axisLine={false} tickLine={false} interval={layout.xAxis.interval} height={layout.xAxis.height} tick={makeCategoryTick(layout.fontSize, layout.xAxis.angle, layout.xAxis.angle === 0 ? slot : 90)} />
+        <YAxis axisLine={false} tickLine={false} width={layout.yAxisWidth} tick={axisTick(layout.fontSize)} tickFormatter={valueFormatter} tickCount={layout.tickCount} />
+        <ReferenceLine y={0} stroke={chartVars.axisLine} />
+        <Tooltip cursor={{ fill: "var(--vi-color-surface-cardHover)", opacity: 0.5 }} content={(p: any) => { const d = p?.payload?.[0]?.payload; if (!p?.active || !d) return null; const Body = rechartsTooltip({}); return <Body active label={d.name} payload={[{ dataKey: "v", name: d.kind === "total" ? "Total" : "Change", value: d.kind === "total" ? valueFormatter(d.actual) : fmtSigned(d.actual), color: colorsMap[d.kind as keyof typeof colorsMap] }, ...(d.kind !== "total" ? [{ dataKey: "e", name: "Running total", value: valueFormatter(d.prevEnd) }] : [])]} />; }} />
+        <Bar dataKey="base" stackId="w" fill="transparent" isAnimationActive={false} />
+        <Bar dataKey="bar" stackId="w" radius={[3, 3, 0, 0]} {...animationProps(ctx)}>
+          {rows.map((r, i) => <Cell key={i} fill={colorsMap[r.kind]} />)}
+          {labelMode.mode !== "never" && <LabelList dataKey="actual" content={(p: any) => (rows[p.index]?.kind === "total" ? totalLabel : barLabel)({ ...p, value: rows[p.index]?.actual })} />}
+        </Bar>
+        {connectors && rows.slice(0, -1).map((r, i) => (
+          <ReferenceLine key={`c${i}`} segment={[{ x: r.name, y: r.prevEnd }, { x: rows[i + 1].name, y: r.prevEnd }]} stroke={chartVars.textMuted} strokeDasharray="2 3" ifOverflow="visible" />
+        ))}
+      </RechartsBarChart>
+    </ResponsiveContainer>
   );
 }

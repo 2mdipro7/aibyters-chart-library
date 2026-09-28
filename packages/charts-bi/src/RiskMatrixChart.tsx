@@ -1,4 +1,3 @@
-import React from "react";
 import { WidgetCard } from "@aibyters/layout";
 
 export interface RiskMatrixChartProps {
@@ -30,14 +29,14 @@ export function RiskMatrixChart({
     // Severity = Likelihood x Impact. Max 25.
     const severity = x * y;
     let bgColor = "rgba(34, 197, 94, 0.15)"; // Green (Low)
-    let borderColor = "#22c55e";
+    let borderColor = "var(--vi-color-positive-main, #22c55e)";
     
     if (severity >= 15) {
       bgColor = "rgba(239, 68, 68, 0.15)"; // Red (High)
-      borderColor = "#ef4444";
+      borderColor = "var(--vi-color-critical-main, #ef4444)";
     } else if (severity >= 8) {
       bgColor = "rgba(245, 158, 11, 0.15)"; // Yellow (Medium)
-      borderColor = "#f59e0b";
+      borderColor = "var(--vi-color-warning-main, #f59e0b)";
     }
 
     return { x, y, bgColor, borderColor };

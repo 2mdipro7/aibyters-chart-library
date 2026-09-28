@@ -35,7 +35,7 @@ export function GroupNode({ data }: NodeProps) {
 
       <div className="flow-group-node__badge">
         {variant === 'loop' && <RefreshCw className="flow-group-node__loop-icon" />}
-        {label}
+        {badgeLabel}
       </div>
       {subtitle && <p className="flow-group-node__subtitle">{subtitle}</p>}
     </div>

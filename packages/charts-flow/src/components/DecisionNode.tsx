@@ -5,7 +5,7 @@ import type { DecisionNodeData } from '../types';
 import './DecisionNode.css';
 
 export function DecisionNode({ data }: NodeProps) {
-  const { label, subtitle, variant = 'default' } = data as DecisionNodeData;
+  const { label, subtitle, variant = 'default' } = data as unknown as DecisionNodeData;
 
   const className = [
     'flow-decision-node',

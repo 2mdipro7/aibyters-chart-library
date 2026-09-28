@@ -4,3 +4,4 @@ export * from "./TargetCard";
 export * from "./SparklineCard";
 export * from "./SeverityCard";
 export * from "./ProgressCard";
+export * from "./MetricStrip";

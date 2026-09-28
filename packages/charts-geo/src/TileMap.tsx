@@ -1,6 +1,5 @@
-import React from "react";
 import { WidgetCard } from "@aibyters/layout";
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from "react-leaflet";
+import { MapContainer, TileLayer, Popup, CircleMarker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 // Fix for default marker icons in leaflet

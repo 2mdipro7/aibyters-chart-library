@@ -1,6 +1,4 @@
-import React from "react";
 import { WidgetCard } from "@aibyters/layout";
-import { formatCompactNumber } from "@aibyters/spec";
 import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
 
 const geoUrl = "https://unpkg.com/world-atlas@2.0.2/countries-110m.json";

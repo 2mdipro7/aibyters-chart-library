@@ -1,58 +1,74 @@
+/*
+ * Global styles for the AI Byters Visual Intelligence Library.
+ * Everything is scoped under .vi-theme-root so the library never leaks styles into a host page.
+ */
 .vi-theme-root {
-  /* Box sizing rules */
   box-sizing: border-box;
-}
-
-.vi-theme-root *,
-.vi-theme-root *::before,
-.vi-theme-root *::after {
-  box-sizing: inherit;
-}
-
-.vi-theme-root {
   font-family: var(--vi-font-body);
   color: var(--vi-color-text-primary);
-  background-color: var(--vi-color-surface-background);
   font-size: var(--vi-text-base);
   line-height: var(--vi-leading-normal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  color-scheme: dark;
 }
+.vi-theme-root[data-color-scheme="light"] { color-scheme: light; }
 
-/* Headings */
-.vi-theme-root h1, 
-.vi-theme-root h2, 
-.vi-theme-root h3, 
-.vi-theme-root h4, 
-.vi-theme-root h5, 
-.vi-theme-root h6 {
+/* Only the default (non-unstyled) root paints a background. */
+.vi-theme-root:not(.vi-theme-root--unstyled) { background-color: var(--vi-color-surface-background); }
+
+.vi-theme-root *, .vi-theme-root *::before, .vi-theme-root *::after { box-sizing: inherit; }
+
+.vi-theme-root h1, .vi-theme-root h2, .vi-theme-root h3, .vi-theme-root h4, .vi-theme-root h5, .vi-theme-root h6 {
   font-family: var(--vi-font-heading);
   margin: 0;
   font-weight: var(--vi-weight-semibold);
   color: var(--vi-color-text-primary);
 }
 
+/* Numeric alignment in tables, tooltips, KPI values */
+.vi-theme-root .vi-num, .vi-theme-root .vi-chart-tooltip, .vi-theme-root .vi-kpi-value { font-variant-numeric: tabular-nums; }
+
 /* Scrollbars */
-.vi-theme-root ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.vi-theme-root ::-webkit-scrollbar { width: 8px; height: 8px; }
+.vi-theme-root ::-webkit-scrollbar-track { background: transparent; }
+.vi-theme-root ::-webkit-scrollbar-thumb { background: var(--vi-color-surface-borderLight); border-radius: var(--vi-radius-full); }
+.vi-theme-root ::-webkit-scrollbar-thumb:hover { background: var(--vi-color-surface-border); }
+
+/* Focus rings (keyboard only) */
+.vi-theme-root :focus-visible { outline: 2px solid var(--vi-color-accent-500); outline-offset: 2px; }
+
+/* Legend items: hover affordance without relying on JS */
+.vi-theme-root .vi-chart-legend-item:hover { background: var(--vi-color-surface-cardHover); }
+
+/* Recharts: never let the SVG overflow its box, and drop the default focus outline on the wrapper */
+.vi-theme-root .recharts-wrapper, .vi-theme-root .recharts-surface { overflow: visible; }
+.vi-theme-root .recharts-wrapper:focus { outline: none; }
+.vi-theme-root .recharts-tooltip-wrapper { z-index: 10; }
+
+/* Touch devices: larger hit targets, no hover-only affordances */
+@media (pointer: coarse) {
+  .vi-theme-root .vi-export-button { min-height: 44px; padding: 8px 12px; }
 }
 
-.vi-theme-root ::-webkit-scrollbar-track {
-  background: var(--vi-color-surface-background);
+/* Respect OS motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .vi-theme-root *, .vi-theme-root *::before, .vi-theme-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-.vi-theme-root ::-webkit-scrollbar-thumb {
-  background: var(--vi-color-surface-borderLight);
-  border-radius: var(--vi-radius-full);
+/* Print / PDF: flatten cards, hide interactive chrome, avoid page breaks inside a widget */
+@media print {
+  .vi-theme-root { background: #fff !important; color: #000 !important; }
+  .vi-theme-root .vi-widget-card { break-inside: avoid; box-shadow: none !important; }
+  .vi-theme-root .vi-export-button { display: none !important; }
 }
 
-.vi-theme-root ::-webkit-scrollbar-thumb:hover {
-  background: var(--vi-color-surface-border);
-}
-
-/* Focus Rings */
-.vi-theme-root *:focus-visible {
-  outline: 2px solid var(--vi-color-accent-500);
-  outline-offset: 2px;
+/* High contrast mode: keep borders visible */
+@media (forced-colors: active) {
+  .vi-theme-root .vi-widget-card { border: 1px solid CanvasText; }
 }

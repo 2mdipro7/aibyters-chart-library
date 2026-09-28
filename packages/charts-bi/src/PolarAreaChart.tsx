@@ -1,131 +1,69 @@
-import React from "react";
-import { WidgetCard } from "@aibyters/layout";
-import { formatCompactNumber } from "@aibyters/spec";
+import { ChartCard } from "@aibyters/layout";
+import { chartVars, labelFits, resolveColors, type BaseChartProps, type ChartContextValue, type SeriesDescriptor } from "@aibyters/core";
+import { DEFAULT_FORMATTER, splitCardProps, type CardKey } from "./internal/cartesian";
 
-export interface PolarAreaChartProps {
-  title: string;
-  description?: string;
+export interface PolarAreaChartProps extends BaseChartProps {
   data: Array<{ name: string; value: number }>;
-  colors?: string[];
-  className?: string;
+  onSliceClick?: (datum: { name: string; value: number }) => void;
 }
 
-const defaultColors = [
-  "#6366f1", "#06b6d4", "#22c55e", "#f59e0b", "#ef4444",
-  "#8b5cf6", "#ec4899", "#14b8a6", "#f97316", "#64748b"
-];
-
-function describeArcPath(x: number, y: number, innerRadius: number, outerRadius: number, startAngle: number, endAngle: number) {
-  const polarToCartesian = (cx: number, cy: number, r: number, angleInDegrees: number) => {
-    const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
-    return {
-      x: cx + (r * Math.cos(angleInRadians)),
-      y: cy + (r * Math.sin(angleInRadians))
-    };
-  };
-
-  const startOut = polarToCartesian(x, y, outerRadius, endAngle);
-  const endOut = polarToCartesian(x, y, outerRadius, startAngle);
-  const startIn = polarToCartesian(x, y, innerRadius, endAngle);
-  const endIn = polarToCartesian(x, y, innerRadius, startAngle);
-
-  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-
-  return [
-    "M", startOut.x, startOut.y,
-    "A", outerRadius, outerRadius, 0, largeArcFlag, 0, endOut.x, endOut.y,
-    "L", endIn.x, endIn.y,
-    "A", innerRadius, innerRadius, 0, largeArcFlag, 1, startIn.x, startIn.y,
-    "Z"
-  ].join(" ");
+function arcPath(cx: number, cy: number, r: number, a0: number, a1: number) {
+  const p = (a: number) => ({ x: cx + r * Math.cos((a - 90) * (Math.PI / 180)), y: cy + r * Math.sin((a - 90) * (Math.PI / 180)) });
+  const s = p(a0);
+  const e = p(a1);
+  const large = a1 - a0 > 180 ? 1 : 0;
+  return `M ${cx} ${cy} L ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y} Z`;
 }
 
-export function PolarAreaChart({
-  title,
-  description,
-  data,
-  colors = defaultColors,
-  ...props
-}: PolarAreaChartProps) {
-
-  const width = 400;
-  const height = 400;
-  const cx = width / 2;
-  const cy = height / 2;
-  const maxRadius = Math.min(width, height) / 2 - 40;
-
-  const maxVal = Math.max(...data.map(d => d.value), 1);
-  const angleStep = 360 / Math.max(data.length, 1);
-
+/** Coxcomb / Nightingale rose. Names live in the legend; the plot only draws a value label when it fits. */
+export function PolarAreaChart(props: PolarAreaChartProps) {
+  const [card, plot] = splitCardProps(props);
+  const palette = resolveColors(props.colors, props.data.length);
+  const series: SeriesDescriptor[] = props.data.map((d, i) => ({ key: `${d.name}__${i}`, label: d.name, color: palette[i], shape: "circle" }));
+  const values = Object.fromEntries(props.data.map((d, i) => [series[i].key, (props.valueFormatter ?? DEFAULT_FORMATTER)(d.value)]));
   return (
-    <WidgetCard title={title} description={description} className={props.className}>
-      <div style={{ width: '100%', height: 350, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: '100%', maxWidth: '400px' }}>
-          
-          {/* Background grid circles */}
-          {[0.25, 0.5, 0.75, 1].map(r => (
-            <circle
-              key={`grid-${r}`}
-              cx={cx}
-              cy={cy}
-              r={maxRadius * r}
-              fill="none"
-              stroke="var(--vi-color-surface-border)"
-              strokeWidth={1}
-              strokeDasharray="4 4"
-            />
-          ))}
+    <ChartCard {...card} height={card.height ?? 280} legend={card.legend ?? { position: "right" }} series={series} legendValues={values} isEmpty={props.data.length === 0} exportData={props.exportData ?? props.data}>
+      {(ctx) => <PolarPlot ctx={ctx} series={series} {...plot} />}
+    </ChartCard>
+  );
+}
 
-          {/* Slices */}
-          {data.map((d, i) => {
-            const r = (d.value / maxVal) * maxRadius;
-            const startAngle = i * angleStep;
-            const endAngle = (i + 1) * angleStep;
-            
-            const midAngle = (startAngle + endAngle) / 2;
-            const labelRad = Math.max(r + 15, maxRadius * 0.3);
-            const lx = cx + labelRad * Math.cos((midAngle - 90) * Math.PI / 180);
-            const ly = cy + labelRad * Math.sin((midAngle - 90) * Math.PI / 180);
-
-            return (
-              <g key={`slice-${i}`}>
-                <path
-                  d={describeArcPath(cx, cy, 0, r, startAngle, endAngle)}
-                  fill={colors[i % colors.length]}
-                  fillOpacity={0.7}
-                  stroke="var(--vi-color-surface-card)"
-                  strokeWidth={2}
-                  style={{ transition: 'all 0.3s ease' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.fillOpacity = '1';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.fillOpacity = '0.7';
-                  }}
-                >
-                  <title>{d.name}: {formatCompactNumber(d.value)}</title>
-                </path>
-                
-                {/* Value/Name labels */}
-                {r > 20 && (
-                  <text
-                    x={lx}
-                    y={ly}
-                    textAnchor="middle"
-                    alignmentBaseline="middle"
-                    fontSize={12}
-                    fill="var(--vi-color-text-primary)"
-                    pointerEvents="none"
-                    style={{ textShadow: '0px 0px 3px var(--vi-color-surface-card)' }}
-                  >
-                    {d.name}
-                  </text>
-                )}
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-    </WidgetCard>
+function PolarPlot({ ctx, data, series, valueFormatter = DEFAULT_FORMATTER, dataLabels, onSliceClick }: Omit<PolarAreaChartProps, CardKey> & { ctx: ChartContextValue; series: SeriesDescriptor[] }) {
+  const w = ctx.width || 300;
+  const h = ctx.height;
+  const cx = w / 2;
+  const cy = h / 2;
+  const R = Math.min(w, h) / 2 - 8;
+  const maxVal = Math.max(1, ...data.map((d) => d.value));
+  const visible = data.map((d, i) => ({ d, s: series[i] })).filter((x) => !ctx.hiddenSeries.has(x.s.key));
+  const step = 360 / Math.max(1, visible.length);
+  const fs = ctx.settings.fontSize;
+  const showLabels = dataLabels !== false;
+  return (
+    <svg width="100%" height="100%" viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Polar area chart" style={{ display: "block", fontFamily: chartVars.fontBody }}>
+      {[0.25, 0.5, 0.75, 1].map((f) => <circle key={f} cx={cx} cy={cy} r={R * f} fill="none" stroke={chartVars.grid} strokeDasharray="3 4" />)}
+      {visible.map(({ d, s }, i) => {
+        const r = Math.sqrt(d.value / maxVal) * R; // area-proportional
+        const a0 = i * step;
+        const a1 = (i + 1) * step;
+        const mid = (a0 + a1) / 2;
+        const lr = r * 0.62;
+        const lx = cx + lr * Math.cos((mid - 90) * (Math.PI / 180));
+        const ly = cy + lr * Math.sin((mid - 90) * (Math.PI / 180));
+        const t = valueFormatter(d.value);
+        const chord = 2 * lr * Math.sin((step * Math.PI) / 360);
+        const dim = ctx.highlightedSeries && ctx.highlightedSeries !== s.key;
+        return (
+          <g key={s.key} onClick={() => onSliceClick?.(d)} style={{ cursor: onSliceClick ? "pointer" : "default" }}>
+            <path d={arcPath(cx, cy, r, a0, a1)} fill={s.color} fillOpacity={dim ? 0.25 : 0.8} stroke="var(--vi-color-surface-card)" strokeWidth={1.5}>
+              <title>{`${d.name}: ${t}`}</title>
+            </path>
+            {showLabels && labelFits(t, chord, r * 0.5, fs, 2) && (
+              <text x={lx} y={ly} textAnchor="middle" dominantBaseline="central" fontSize={fs} fill="#fff" style={{ pointerEvents: "none", paintOrder: "stroke", stroke: "rgba(0,0,0,0.35)", strokeWidth: 2 }}>{t}</text>
+            )}
+          </g>
+        );
+      })}
+    </svg>
   );
 }
