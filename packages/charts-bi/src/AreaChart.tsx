@@ -39,8 +39,10 @@ function AreaPlot({ ctx, data, index, series, seriesLabels, valueFormatter = DEF
     <ResponsiveContainer width="100%" height="100%">
       <RechartsAreaChart data={data} margin={layout.margin} stackOffset={percent ? "expand" : "none"}>
         <defs>
-          {series.map((s) => (
-            <linearGradient key={s.key} id={`${gid}-${s.key}`} x1="0" y1="0" x2="0" y2="1">
+          {/* Ids use the series position, not its key: a key with a space or punctuation
+              ("Members Joined") makes url(#…) unresolvable and the area paints black. */}
+          {series.map((s, i) => (
+            <linearGradient key={s.key} id={`${gid}-${i}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={s.color} stopOpacity={fillOpacity} />
               <stop offset="95%" stopColor={s.color} stopOpacity={isStacked ? fillOpacity * 0.6 : 0.02} />
             </linearGradient>
@@ -50,7 +52,7 @@ function AreaPlot({ ctx, data, index, series, seriesLabels, valueFormatter = DEF
         <XAxis dataKey={index} axisLine={false} tickLine={false} interval={layout.xAxis.interval} height={layout.xAxis.height} tick={makeCategoryTick(layout.fontSize, layout.xAxis.angle, layout.xAxis.angle === 0 ? Math.max(40, ((ctx.width || 600) - layout.yAxisWidth) / Math.max(1, data.length)) : 90)} tickFormatter={labelFormatter as any} minTickGap={4} />
         <YAxis axisLine={false} tickLine={false} width={layout.yAxisWidth} tick={axisTick(layout.fontSize)} tickFormatter={fmt} tickCount={layout.tickCount} />
         <Tooltip content={rechartsTooltip({ valueFormatter, hidden: ctx.hiddenSeries, nameMap: seriesLabels, labelFormatter, total: isStacked && !percent })} cursor={{ stroke: "var(--vi-color-surface-border)" }} />
-        {series.map((s) => (
+        {series.map((s, i) => (
           <Area
             key={s.key}
             type={curve}
@@ -61,7 +63,7 @@ function AreaPlot({ ctx, data, index, series, seriesLabels, valueFormatter = DEF
             strokeWidth={ctx.settings.strokeWidth}
             strokeOpacity={seriesOpacity(s.key, ctx)}
             fillOpacity={seriesOpacity(s.key, ctx)}
-            fill={`url(#${gid}-${s.key})`}
+            fill={`url(#${gid}-${i})`}
             hide={ctx.hiddenSeries.has(s.key)}
             dot={false}
             activeDot={{ r: ctx.settings.dotRadius, strokeWidth: 0 }}
