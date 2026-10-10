@@ -11,6 +11,8 @@
   },
   "files": ["dist"],
   "dependencies": {
+    "@aibyters/charts-bi": "workspace:*",
+    "@aibyters/charts-ds": "workspace:*",
     "@aibyters/renderer": "workspace:*",
     "@aibyters/spec": "workspace:*",
     "@aibyters/theme": "workspace:*",

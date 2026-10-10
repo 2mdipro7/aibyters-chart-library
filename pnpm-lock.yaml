@@ -531,6 +531,12 @@ importers:
 
   packages/embed:
     dependencies:
+      '@aibyters/charts-bi':
+        specifier: workspace:*
+        version: link:../charts-bi
+      '@aibyters/charts-ds':
+        specifier: workspace:*
+        version: link:../charts-ds
       '@aibyters/renderer':
         specifier: workspace:*
         version: link:../renderer

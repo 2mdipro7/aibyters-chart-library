@@ -8,6 +8,16 @@ uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Embed
+
+- `AIBytersCharts.renderComponent(el, { component, props, theme, overrides })` draws one named
+  component with explicit props, bypassing the planner, for hosts that must keep their own KPI
+  values, supplied deltas or forecast bounds. `componentNames()` lists what it accepts and
+  `isMounted(el)` reports whether an element holds a chart. `render` and `renderComponent` share
+  one root per element.
+- `ForecastBand`, `HeatmapChart`, `RiskMatrixChart` and `BulletChart` are registered in the embed
+  bundle (no spec kind selects them yet). `formatValue` is exposed on the API. Version 0.3.0.
+
 ## [0.1.0] - 2026-09-28
 
 ### Enterprise hardening

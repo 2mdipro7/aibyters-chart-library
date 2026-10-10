@@ -10,6 +10,7 @@
       "@aibyters/charts-kpi": ["../charts-kpi/src/index.ts"],
       "@aibyters/charts-bi": ["../charts-bi/src/index.ts"],
       "@aibyters/charts-ai": ["../charts-ai/src/index.ts"],
+      "@aibyters/charts-ds": ["../charts-ds/src/index.ts"],
       "@aibyters/layout": ["../layout/src/index.ts"],
       "@aibyters/core": ["../core/src/index.ts"],
       "@aibyters/tokens": ["../tokens/src/index.ts"]

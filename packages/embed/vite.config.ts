@@ -27,6 +27,7 @@ export default defineConfig({
       "@aibyters/charts-kpi": pkg("charts-kpi"),
       "@aibyters/charts-bi": pkg("charts-bi"),
       "@aibyters/charts-ai": pkg("charts-ai"),
+      "@aibyters/charts-ds": pkg("charts-ds"),
       "@aibyters/layout": pkg("layout"),
       "@aibyters/core": pkg("core"),
       "@aibyters/tokens": pkg("tokens"),
