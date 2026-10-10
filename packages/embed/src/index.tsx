@@ -109,7 +109,17 @@ export function isMounted(el: Element): boolean {
   return roots.has(el);
 }
 
+/** Names renderComponent accepts. */
+export function componentNames(): string[] {
+  return Object.keys(components);
+}
+
+export const catalog = CATALOG;
 export const version = "0.3.0";
+
+// The IIFE build assigns the module's exports to the global, so everything the API
+// offers must be a named export; `api` is the same object for script-tag consumers.
+export { planChart, formatCell, formatMoney, formatNumber, formatValue };
 
 const api = {
   render,
@@ -121,9 +131,8 @@ const api = {
   formatMoney,
   formatNumber,
   formatValue,
-  catalog: CATALOG,
-  /** Names renderComponent accepts. */
-  componentNames: (): string[] => Object.keys(components),
+  catalog,
+  componentNames,
   version,
 };
 
