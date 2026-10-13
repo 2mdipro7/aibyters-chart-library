@@ -2,7 +2,7 @@
   "name": "@aibyters/charts-network",
   "version": "0.1.0",
   "description": "Network and relationship charts: network graph, chord diagram, dependency tree.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
@@ -20,7 +20,7 @@
     "LICENSE"
   ],
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "build": "vite build",

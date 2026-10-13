@@ -1,15 +1,4 @@
-# Manual release of every @aibyters/* package to a private registry.
-#
-# Licensed distribution: these packages are proprietary ("SEE LICENSE IN LICENSE") and are
-# published with access=restricted. Point NPM_REGISTRY at the private registry that licensees
-# are given credentials for (GitHub Packages, Verdaccio, Artifactory, Nexus, ...). The public
-# npmjs.org URL is only the default so that a scoped organisation registry works out of the box.
-#
-# Required repository settings:
-#   secrets.NPM_TOKEN     publish token for the registry (write access to the @aibyters scope)
-#   vars.NPM_REGISTRY     registry URL, e.g. https://npm.pkg.github.com (optional, see default below)
-#
-# See docs/RELEASING.md for the end-to-end procedure.
+# Manual release of MIT-licensed @aibyters packages. Requires an npm publish token.
 name: Release
 
 on:
@@ -87,10 +76,10 @@ jobs:
         if: ${{ inputs.dry_run }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm -r --filter './packages/**' publish --no-git-checks --access restricted --dry-run
+        run: pnpm -r --filter './packages/**' publish --no-git-checks --access public --dry-run
 
       - name: Publish
         if: ${{ !inputs.dry_run }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm -r --filter './packages/**' publish --no-git-checks --access restricted
+        run: pnpm -r --filter './packages/**' publish --no-git-checks --access public

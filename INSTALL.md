@@ -65,21 +65,9 @@ The library is a **monorepo** with several scoped packages. You can install only
 
 ### Step 1: Install Packages
 
-Licensees install from the private registry (Option C, recommended). During evaluation you can consume the packages via **path aliases** in your Vite config, or by building and linking them locally.
+The library is free under MIT. Download the complete source archive and use workspace aliases or local package linking below. Public npm packages will be announced separately once published; no private-registry token is needed for source use.
 
-#### Option C — Private registry (licensed)
-
-```ini
-# .npmrc
-@aibyters:registry=https://npm.your-registry.example/
-//npm.your-registry.example/:_authToken=${AIBYTERS_TOKEN}
-```
-
-```bash
-pnpm add @aibyters/theme @aibyters/layout @aibyters/charts-bi @aibyters/charts-kpi
-```
-
-#### Option A — Path Aliases (Vite / Turborepo monorepo, evaluation)
+#### Option A — Path Aliases (Vite / Turborepo monorepo)
 
 If your project is already a monorepo, add the `aibyters` packages to your `pnpm-workspace.yaml`:
 

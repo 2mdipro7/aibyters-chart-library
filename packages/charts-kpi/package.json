@@ -2,7 +2,7 @@
   "name": "@aibyters/charts-kpi",
   "version": "0.1.0",
   "description": "KPI cards: metric, delta, target, sparkline, severity and progress cards.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
@@ -20,7 +20,7 @@
     "LICENSE"
   ],
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "build": "vite build",

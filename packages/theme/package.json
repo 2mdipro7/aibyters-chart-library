@@ -2,19 +2,32 @@
   "name": "@aibyters/theme",
   "version": "0.1.0",
   "description": "Design tokens as CSS custom properties, ThemeProvider (dark / light / system / brand), and global styles.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "type": "module",
-  "sideEffects": ["*.css", "./dist/index.js", "./dist/index.cjs"],
+  "sideEffects": [
+    "*.css",
+    "./dist/index.js",
+    "./dist/index.cjs"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "require": "./dist/index.cjs" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
     "./styles.css": "./dist/index.css",
     "./dist/index.css": "./dist/index.css"
   },
-  "files": ["dist", "LICENSE"],
-  "publishConfig": { "access": "restricted" },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit",

@@ -2,7 +2,7 @@
   "name": "@aibyters/charts-geo",
   "version": "0.1.0",
   "description": "Geographic charts: choropleth, bubble map, connection map and Leaflet tile map.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "type": "module",
   "sideEffects": [
     "*.css",
@@ -26,7 +26,7 @@
     "LICENSE"
   ],
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "build": "vite build",

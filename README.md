@@ -69,7 +69,8 @@ Packages for non-React hosts:
 - **`packages/renderer`**: `SpecChart` draws a ChartSpec over a DataFrame with the matching component; the bridge for backends and models that answer with data plus a spec.
 - **`packages/embed`**: one script + stylesheet exposing `window.AIBytersCharts.render()` for pages that are not React (Jinja, Frappe, plain HTML).
 
-## Licensing
+## Licensing and optional services
 
-Proprietary — see [LICENSE](./LICENSE). Commercial terms, the licensee questionnaire and the pricing
-model are in [docs/commercial](./docs/commercial). Release procedure: [docs/RELEASING.md](./docs/RELEASING.md).
+The entire library is free and open source under the MIT license. Commercial use, modification and redistribution are allowed; preserve the copyright and license notices. See [LICENSE](./LICENSE). Third-party dependencies retain their own licenses.
+
+AI Byters offers optional paid technical support, custom dashboard development, data integration and BI platform implementation. Share your use case at contact@aibyters.com. No support contract is required to use the library.

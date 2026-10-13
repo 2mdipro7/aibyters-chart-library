@@ -1,5 +1,6 @@
 import React, { useState, lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from '@aibyters/theme';
 import { Sidebar } from './components/Sidebar';
 import { SearchBar } from './components/SearchBar';
 import { ThemeToggle } from './components/ThemeToggle';
@@ -93,6 +94,7 @@ export default function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   return (
+    <ThemeProvider theme={theme}>
     <HashRouter>
       <div className="app-layout">
         <Sidebar searchQuery={search} />
@@ -194,5 +196,6 @@ export default function App() {
         </main>
       </div>
     </HashRouter>
+    </ThemeProvider>
   );
 }

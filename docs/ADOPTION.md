@@ -6,14 +6,8 @@ is used, so charts render acceptably even before the theme is loaded.
 
 ## 1. Install
 
-```bash
-# .npmrc in your app (private registry issued with your licence)
-@aibyters:registry=https://npm.your-registry.example/
-//npm.your-registry.example/:_authToken=${AIBYTERS_TOKEN}
+Download or clone the MIT-licensed source, then follow [INSTALL.md](../INSTALL.md) for workspace aliases or local package linking. Registry publication is a separate release step. Install the host peer dependencies your selected packages require.
 
-pnpm add @aibyters/theme @aibyters/layout @aibyters/charts-bi @aibyters/charts-kpi
-pnpm add react react-dom recharts        # peers
-```
 
 Peer matrix: React 18.2+ or 19, Recharts 2.12+ (charts-bi/ds), Leaflet + react-leaflet + react-simple-maps (charts-geo only).
 

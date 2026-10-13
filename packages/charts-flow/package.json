@@ -2,7 +2,7 @@
   "name": "@aibyters/charts-flow",
   "version": "0.1.0",
   "description": "Interactive flowcharts and process diagrams built on @xyflow/react.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "type": "module",
   "sideEffects": [
     "*.css",
@@ -26,7 +26,7 @@
     "LICENSE"
   ],
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "build": "vite build",

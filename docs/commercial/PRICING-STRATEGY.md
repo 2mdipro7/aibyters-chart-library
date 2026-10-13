@@ -1,3 +1,5 @@
+> Superseded on 14 October 2026: the entire library is MIT licensed and free to use. This historical commercial-license proposal does not govern current use. Paid technical support and BI implementation are scoped separately.
+
 # Pricing strategy
 
 ## 1. Positioning

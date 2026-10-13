@@ -19,7 +19,8 @@
     "clean": "rimraf dist"
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE"
   ],
   "dependencies": {
     "@aibyters/charts-ai": "workspace:*",
@@ -39,5 +40,6 @@
     "vite": "^5.4.21",
     "vite-plugin-dts": "^5.0.3",
     "vitest": "^3.2.4"
-  }
+  },
+  "license": "MIT"
 }

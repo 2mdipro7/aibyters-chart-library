@@ -2,8 +2,8 @@
   "name": "aibyters-chart-library",
   "version": "0.1.0",
   "private": true,
-  "description": "AI Byters Visual Intelligence Library \u2014 monorepo root",
-  "license": "SEE LICENSE IN LICENSE",
+  "description": "AI Byters Visual Intelligence Library — monorepo root",
+  "license": "MIT",
   "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": ">=18.18",

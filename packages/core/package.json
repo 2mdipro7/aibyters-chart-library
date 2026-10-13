@@ -2,7 +2,7 @@
   "name": "@aibyters/core",
   "version": "0.1.0",
   "description": "Shared chart primitives for the AI Byters Visual Intelligence Library: responsive frame, HTML legend, theme access, label collision utilities.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
@@ -15,8 +15,13 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "LICENSE"],
-  "publishConfig": { "access": "restricted" },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit",

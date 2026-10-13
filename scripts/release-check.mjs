@@ -6,9 +6,9 @@
  * Exit code 1 (with one line per problem) when any package is not publishable.
  *
  * Checks, per package:
- *   - package.json: license "SEE LICENSE IN LICENSE", version equals the root version,
+ *   - package.json: license "MIT", version equals the root version,
  *     exports["."].types, main/module/types point at dist, "files" includes dist and LICENSE,
- *     publishConfig.access is "restricted", no "private": true
+ *     publishConfig.access is "public", no "private": true
  *   - workspace links: every "workspace:*" dependency names an existing package
  *     (pnpm rewrites the range on publish, so only its existence is verified)
  *   - build output: dist/index.js, dist/index.cjs, dist/index.d.ts exist and the .d.ts does not
@@ -42,7 +42,7 @@ for (const { dir, name, pkg } of packages) {
   }
   const before = problems.length;
 
-  if (pkg.license !== "SEE LICENSE IN LICENSE") fail(name, `license must be "SEE LICENSE IN LICENSE" (got ${JSON.stringify(pkg.license)})`);
+  if (pkg.license !== "MIT") fail(name, `license must be "MIT" (got ${JSON.stringify(pkg.license)})`);
   if (pkg.version !== rootPkg.version) fail(name, `version ${pkg.version} does not match root version ${rootPkg.version}`);
   if (!pkg.exports?.["."]?.types) fail(name, `exports["."].types is missing`);
   if (!pkg.exports?.["."]?.import) fail(name, `exports["."].import is missing`);
@@ -52,7 +52,7 @@ for (const { dir, name, pkg } of packages) {
   if (!pkg.module?.startsWith("./dist/")) fail(name, `"module" must point into dist`);
   if (!Array.isArray(pkg.files) || !pkg.files.includes("dist")) fail(name, `"files" must include "dist"`);
   if (!Array.isArray(pkg.files) || !pkg.files.includes("LICENSE")) fail(name, `"files" must include "LICENSE"`);
-  if (pkg.publishConfig?.access !== "restricted") fail(name, `publishConfig.access must be "restricted"`);
+  if (pkg.publishConfig?.access !== "public") fail(name, `publishConfig.access must be "public"`);
   if (!pkg.description) fail(name, `description is missing`);
   if (pkg.sideEffects === undefined) fail(name, `sideEffects must be declared (false or a list of CSS globs)`);
 

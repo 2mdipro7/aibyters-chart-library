@@ -17,10 +17,14 @@
     "test": "vitest run",
     "clean": "rimraf dist"
   },
-  "files": ["dist"],
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "license": "MIT"
 }
