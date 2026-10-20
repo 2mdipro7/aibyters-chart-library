@@ -8,13 +8,15 @@ from aibyters_charts.license import check_dashboard_limit
 
 BLOCK_SCRIPT = """
 (function () {
+  // Custom HTML Blocks render inside an open shadow root (frappe.create_shadow_element):
+  // stylesheets loaded into <head> do not reach it, so link the chart CSS inside root_element.
   const el = root_element;
-  el.innerHTML = '<div class="aib-block" style="min-height:120px"></div>';
-  const target = el.querySelector('.aib-block');
   const boot = (frappe.boot && frappe.boot.aibyters_charts) || {};
   const js = boot.bundle || '/assets/aibyters_charts/dist/aib-dashboard.js';
   const css = boot.css || '/assets/aibyters_charts/dist/aib-dashboard.css';
-  frappe.require([css, js]).then(function () {
+  el.innerHTML = '<link rel="stylesheet" href="' + css + '"><div class="aib-block" style="min-height:120px"></div>';
+  const target = el.querySelector('.aib-block');
+  frappe.require(js).then(function () {
     window.aibyters.mountDashboardByName(target, %(name)s, { hideHeader: false, compact: true });
   });
 })();
