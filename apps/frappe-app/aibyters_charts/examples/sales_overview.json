@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "title": "Sales overview (example)",
+  "description": "Built from Sales Invoice. Edit this dashboard or duplicate it.",
+  "columns": 3,
+  "filters": [
+    { "fieldname": "company", "label": "Company", "fieldtype": "Link", "options": "Company" }
+  ],
+  "widgets": [
+    { "id": "kpis", "type": "metric_strip", "title": "This year", "span": 3, "format": "currency",
+      "encodings": { "nameKey": "label", "dataKey": "value" },
+      "source": { "kind": "method", "method": "aibyters_charts.api.kpi_strip", "args": { "doctype": "Sales Invoice", "measure": "grand_total", "date_field": "posting_date" } } },
+    { "id": "trend", "type": "column", "title": "Revenue by month", "span": 2, "format": "currency",
+      "source": { "kind": "query", "doctype": "Sales Invoice", "dimension": "posting_date", "time_grain": "month", "measure": "grand_total", "aggregate": "sum", "filters": { "docstatus": 1 } } },
+    { "id": "mix", "type": "donut", "title": "Revenue by customer group",
+      "encodings": { "nameKey": "dimension", "dataKey": "value" }, "format": "currency",
+      "source": { "kind": "query", "doctype": "Sales Invoice", "dimension": "customer_group", "measure": "grand_total", "aggregate": "sum", "filters": { "docstatus": 1 } } },
+    { "id": "top", "type": "ranked_bar", "title": "Top customers", "format": "currency",
+      "encodings": { "nameKey": "dimension", "dataKey": "value" }, "drilldown": "/app/sales-invoice?customer={name}",
+      "source": { "kind": "query", "doctype": "Sales Invoice", "dimension": "customer", "measure": "grand_total", "aggregate": "sum", "order": "desc", "limit": 8, "filters": { "docstatus": 1 } } },
+    { "id": "status", "type": "status_strip", "title": "Invoices by status",
+      "encodings": { "nameKey": "dimension", "status": "dimension", "count": "value" },
+      "source": { "kind": "query", "doctype": "Sales Invoice", "dimension": "status", "aggregate": "count" } },
+    { "id": "recent", "type": "table", "title": "Recent invoices", "format": "currency",
+      "source": { "kind": "list", "doctype": "Sales Invoice", "fields": ["name", "customer", "posting_date", "grand_total", "status"], "order_by": "posting_date desc", "limit": 20 },
+      "drilldown": "/app/sales-invoice/{name}" }
+  ]
+}

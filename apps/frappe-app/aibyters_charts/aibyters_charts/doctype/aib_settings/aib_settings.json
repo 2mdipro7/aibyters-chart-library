@@ -1,0 +1,29 @@
+{
+ "actions": [],
+ "creation": "2026-10-20 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["section_license", "license_key", "column_break_2", "plan", "license_status", "licensee", "valid_until", "section_brand", "white_label", "palette", "default_currency"],
+ "fields": [
+  {"fieldname": "section_license", "fieldtype": "Section Break", "label": "Licence"},
+  {"fieldname": "license_key", "fieldtype": "Password", "label": "Licence key", "description": "Not needed on Frappe Cloud (the Marketplace plan is detected automatically) or for the free tier."},
+  {"fieldname": "column_break_2", "fieldtype": "Column Break"},
+  {"fieldname": "plan", "fieldtype": "Data", "label": "Plan", "read_only": 1},
+  {"fieldname": "license_status", "fieldtype": "Data", "label": "Status", "read_only": 1},
+  {"fieldname": "licensee", "fieldtype": "Data", "label": "Licensee", "read_only": 1},
+  {"fieldname": "valid_until", "fieldtype": "Date", "label": "Valid until", "read_only": 1},
+  {"fieldname": "section_brand", "fieldtype": "Section Break", "label": "Branding"},
+  {"fieldname": "white_label", "fieldtype": "Check", "label": "Hide 'Powered by AI Byters' (paid plans)"},
+  {"fieldname": "palette", "fieldtype": "Small Text", "label": "Chart palette (one colour per line, optional)"},
+  {"fieldname": "default_currency", "fieldtype": "Link", "label": "Default currency", "options": "Currency"}
+ ],
+ "issingle": 1,
+ "modified": "2026-10-20 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "AI Byters Charts",
+ "name": "AIB Settings",
+ "owner": "Administrator",
+ "permissions": [{"role": "System Manager", "read": 1, "write": 1, "create": 1}],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

@@ -1,0 +1,24 @@
+{
+ "content": "[{\"id\":\"h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>AI Byters Charts</b></span>\",\"col\":12}},{\"id\":\"s1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboards\",\"col\":4}},{\"id\":\"s2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AIB Dashboard\",\"col\":4}},{\"id\":\"s3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AIB Settings\",\"col\":4}}]",
+ "creation": "2026-10-20 00:00:00.000000",
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "dashboard",
+ "is_hidden": 0,
+ "label": "AI Byters Charts",
+ "links": [],
+ "modified": "2026-10-20 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "AI Byters Charts",
+ "name": "AI Byters Charts",
+ "owner": "Administrator",
+ "public": 1,
+ "sequence_id": 99.0,
+ "shortcuts": [
+  {"label": "Dashboards", "link_to": "aib-dashboard", "type": "Page", "color": "Blue"},
+  {"label": "AIB Dashboard", "link_to": "AIB Dashboard", "type": "DocType", "color": "Grey"},
+  {"label": "AIB Settings", "link_to": "AIB Settings", "type": "DocType", "color": "Grey"}
+ ],
+ "title": "AI Byters Charts"
+}

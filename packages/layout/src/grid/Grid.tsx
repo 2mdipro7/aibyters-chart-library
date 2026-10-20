@@ -1,4 +1,5 @@
-import React from "react";
+import React, { createContext, useContext, useMemo, useRef } from "react";
+import { useContainerSize } from "@aibyters/core";
 
 export interface GridProps {
   children: React.ReactNode;
@@ -13,27 +14,43 @@ export interface GridProps {
 
 const GAP = { sm: 12, md: 20, lg: 28 } as const;
 
+/** Number of columns the enclosing Grid currently renders (1 outside a Grid). */
+const GridColumnsContext = createContext(1);
+export function useGridColumns(): number {
+  return useContext(GridColumnsContext);
+}
+
 /**
  * Responsive dashboard grid. Fits as many `minColumnWidth`-wide columns as the container
  * allows, capped at `columns`, so the same markup lays out correctly on phones, tablets,
- * laptops and wall displays without media queries in the host app.
+ * laptops and wall displays without media queries in the host app. Items that span more
+ * columns than currently exist are clamped, never overflowing.
  */
 export function Grid({ children, columns = 3, minColumnWidth = 320, gap = "md", className, style }: GridProps) {
   const g = GAP[gap];
+  const ref = useRef<HTMLDivElement>(null);
+  const { width } = useContainerSize(ref);
+  const cols = useMemo(() => {
+    if (!width) return columns;
+    return Math.max(1, Math.min(columns, Math.floor((width + g) / (minColumnWidth + g))));
+  }, [width, columns, minColumnWidth, g]);
   return (
-    <div
-      className={`vi-grid ${className ?? ""}`.trim()}
-      style={{
-        display: "grid",
-        gap: g,
-        gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, max(${minColumnWidth}px, calc((100% - ${(columns - 1) * g}px) / ${columns}))), 1fr))`,
-        alignItems: "stretch",
-        minWidth: 0,
-        ...style,
-      }}
-    >
-      {children}
-    </div>
+    <GridColumnsContext.Provider value={cols}>
+      <div
+        ref={ref}
+        className={`vi-grid ${className ?? ""}`.trim()}
+        style={{
+          display: "grid",
+          gap: g,
+          gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+          alignItems: "stretch",
+          minWidth: 0,
+          ...style,
+        }}
+      >
+        {children}
+      </div>
+    </GridColumnsContext.Provider>
   );
 }
 
@@ -46,12 +63,13 @@ export interface GridItemProps {
 }
 
 export function GridItem({ children, colSpan = 1, rowSpan = 1, className, style }: GridItemProps) {
+  const cols = useGridColumns();
+  const span = Math.max(1, Math.min(colSpan, cols));
   return (
     <div
       className={`vi-grid-item ${className ?? ""}`.trim()}
       style={{
-        // `span N` collapses gracefully when fewer than N columns exist.
-        gridColumn: `span ${colSpan}`,
+        gridColumn: `span ${span}`,
         gridRow: `span ${rowSpan}`,
         minWidth: 0,
         ...style,

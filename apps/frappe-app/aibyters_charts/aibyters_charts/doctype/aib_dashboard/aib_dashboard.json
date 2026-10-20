@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:title",
+ "creation": "2026-10-20 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "description",
+  "column_break_1",
+  "is_public",
+  "is_example",
+  "create_workspace_block",
+  "section_spec",
+  "spec",
+  "section_roles",
+  "roles"
+ ],
+ "fields": [
+  {"fieldname": "title", "fieldtype": "Data", "label": "Title", "reqd": 1, "unique": 1, "in_list_view": 1},
+  {"fieldname": "description", "fieldtype": "Small Text", "label": "Description", "in_list_view": 1},
+  {"fieldname": "column_break_1", "fieldtype": "Column Break"},
+  {"fieldname": "is_public", "fieldtype": "Check", "label": "Visible to all users with read access", "default": "1"},
+  {"fieldname": "is_example", "fieldtype": "Check", "label": "Example (managed by the app)", "read_only": 1, "hidden": 1},
+  {"fieldname": "create_workspace_block", "fieldtype": "Check", "label": "Create workspace block", "description": "Creates a Custom HTML Block named after this dashboard that you can add to any Workspace."},
+  {"fieldname": "section_spec", "fieldtype": "Section Break", "label": "Specification"},
+  {"fieldname": "spec", "fieldtype": "JSON", "label": "Dashboard spec (JSON)", "reqd": 1, "description": "See the docs for the schema. Use the buttons above to load an example or validate."},
+  {"fieldname": "section_roles", "fieldtype": "Section Break", "label": "Access"},
+  {"fieldname": "roles", "fieldtype": "Table MultiSelect", "label": "Restrict to roles", "options": "AIB Dashboard Role"}
+ ],
+ "links": [],
+ "modified": "2026-10-20 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "AI Byters Charts",
+ "name": "AIB Dashboard",
+ "owner": "Administrator",
+ "permissions": [
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1, "export": 1, "share": 1, "print": 1, "email": 1, "report": 1},
+  {"role": "AIB Dashboard Manager", "read": 1, "write": 1, "create": 1, "delete": 1, "export": 1, "share": 1},
+  {"role": "All", "read": 1}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "states": []
+}
