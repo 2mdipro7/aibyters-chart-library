@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "title": "Finance overview (example)",
+  "description": "Receivables, payables and cash position from GL Entry, Sales Invoice and Purchase Invoice.",
+  "columns": 4,
+  "filters": [{ "fieldname": "company", "label": "Company", "fieldtype": "Link", "options": "Company" }],
+  "widgets": [
+    { "id": "kpis", "type": "metric_strip", "title": "Invoicing this year", "span": 4, "format": "currency", "encodings": { "nameKey": "label", "dataKey": "value" },
+      "source": { "kind": "method", "method": "aibyters_charts.api.kpi_strip", "args": { "doctype": "Sales Invoice", "measure": "grand_total", "date_field": "posting_date" } } },
+    { "id": "ar_aging", "type": "column", "title": "Receivables by status", "span": 2, "format": "currency", "encodings": { "index": "dimension", "categories": ["value"], "seriesLabels": { "value": "Outstanding" } },
+      "source": { "kind": "query", "doctype": "Sales Invoice", "dimension": "status", "measure": "outstanding_amount", "aggregate": "sum", "filters": { "docstatus": 1, "outstanding_amount": [">", 0] } } },
+    { "id": "ap_due", "type": "ranked_bar", "title": "Largest open payables", "span": 2, "format": "currency", "encodings": { "nameKey": "dimension", "dataKey": "value" }, "drilldown": "/app/purchase-invoice?supplier={name}",
+      "source": { "kind": "query", "doctype": "Purchase Invoice", "dimension": "supplier", "measure": "outstanding_amount", "aggregate": "sum", "order": "desc", "limit": 8, "filters": { "docstatus": 1, "outstanding_amount": [">", 0] } } },
+    { "id": "sales_vs_purchase", "type": "paired_bar", "title": "Sales vs purchases by month", "span": 2, "format": "currency",
+      "encodings": { "nameKey": "month", "a": "sales", "b": "purchases", "aLabel": "Sales", "bLabel": "Purchases" },
+      "source": { "kind": "method", "method": "aibyters_charts.api.monthly_pair", "args": { "a_doctype": "Sales Invoice", "b_doctype": "Purchase Invoice", "measure": "grand_total", "date_field": "posting_date", "months": 6 } } },
+    { "id": "pnl_mix", "type": "composition_band", "title": "Expense mix (Journal Entry accounts)", "span": 2, "format": "currency", "encodings": { "nameKey": "dimension", "dataKey": "value" },
+      "source": { "kind": "query", "doctype": "GL Entry", "dimension": "account", "measure": "debit", "aggregate": "sum", "order": "desc", "limit": 6, "filters": { "is_cancelled": 0, "voucher_type": "Journal Entry" } } },
+    { "id": "overdue", "type": "table", "title": "Overdue invoices", "span": 4, "format": "currency", "drilldown": "/app/sales-invoice/{name}",
+      "source": { "kind": "list", "doctype": "Sales Invoice", "fields": ["name", "customer", "due_date", "outstanding_amount", "status"], "filters": { "status": "Overdue" }, "order_by": "due_date asc", "limit": 25 } }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "title": "Projects & support (example)",
+  "description": "Delivery and service health from Project, Task, Timesheet and Issue.",
+  "columns": 4,
+  "widgets": [
+    { "id": "open_projects", "type": "metric", "title": "Open projects", "format": "count", "source": { "kind": "query", "doctype": "Project", "aggregate": "count", "filters": { "status": "Open" } } },
+    { "id": "overdue_tasks", "type": "metric", "title": "Overdue tasks", "format": "count", "source": { "kind": "query", "doctype": "Task", "aggregate": "count", "filters": { "status": ["in", ["Open", "Working", "Pending Review"]], "exp_end_date": ["<", "Today"] } } },
+    { "id": "open_issues", "type": "metric", "title": "Open issues", "format": "count", "source": { "kind": "query", "doctype": "Issue", "aggregate": "count", "filters": { "status": "Open" } } },
+    { "id": "hours", "type": "metric", "title": "Hours logged (year)", "format": "number", "source": { "kind": "query", "doctype": "Timesheet", "measure": "total_hours", "aggregate": "sum", "filters": { "docstatus": 1 } } },
+    { "id": "progress", "type": "progress_rings", "title": "Project completion", "span": 2, "encodings": { "nameKey": "name", "dataKey": "percent_complete" },
+      "source": { "kind": "list", "doctype": "Project", "fields": ["name", "project_name", "percent_complete"], "filters": { "status": "Open" }, "order_by": "percent_complete desc", "limit": 6 } },
+    { "id": "task_status", "type": "composition_band", "title": "Tasks by status", "span": 2, "format": "count", "encodings": { "nameKey": "dimension", "dataKey": "value" },
+      "source": { "kind": "query", "doctype": "Task", "dimension": "status", "aggregate": "count" } },
+    { "id": "issues_month", "type": "area", "title": "Issues opened by month", "span": 2, "format": "count", "encodings": { "index": "dimension", "categories": ["value"], "seriesLabels": { "value": "Issues" } },
+      "source": { "kind": "query", "doctype": "Issue", "dimension": "opening_date", "time_grain": "month", "aggregate": "count", "limit": 12 } },
+    { "id": "issue_priority", "type": "status_strip", "title": "Open issues by priority", "span": 2, "encodings": { "nameKey": "dimension", "status": "dimension", "count": "value" }, "options": { "statusColors": { "High": "var(--vi-color-critical-main)", "Medium": "var(--vi-color-warning-main)", "Low": "var(--vi-color-positive-main)" } },
+      "source": { "kind": "query", "doctype": "Issue", "dimension": "priority", "aggregate": "count", "filters": { "status": "Open" } } },
+    { "id": "hours_by_project", "type": "bar", "title": "Hours by project", "span": 2, "format": "number", "encodings": { "index": "dimension", "categories": ["value"], "seriesLabels": { "value": "Hours" } },
+      "source": { "kind": "query", "doctype": "Timesheet Detail", "dimension": "project", "measure": "hours", "aggregate": "sum", "order": "desc", "limit": 8 } },
+    { "id": "recent_issues", "type": "table", "title": "Recent issues", "span": 2, "drilldown": "/app/issue/{name}",
+      "source": { "kind": "list", "doctype": "Issue", "fields": ["name", "subject", "customer", "priority", "status", "opening_date"], "order_by": "opening_date desc", "limit": 15 } }
+  ]
+}

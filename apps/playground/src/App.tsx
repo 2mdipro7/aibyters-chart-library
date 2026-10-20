@@ -4,6 +4,12 @@ import { Sidebar } from './components/Sidebar';
 import { SearchBar } from './components/SearchBar';
 import { ThemeToggle } from './components/ThemeToggle';
 import Overview from './pages/Overview';
+import ExecutiveFinance from './pages/dashboards/ExecutiveFinance';
+import SalesPipeline from './pages/dashboards/SalesPipeline';
+import Operations from './pages/dashboards/Operations';
+import PeopleHR from './pages/dashboards/PeopleHR';
+import Reconciliation from './pages/dashboards/Reconciliation';
+import SaasGrowth from './pages/dashboards/SaasGrowth';
 
 // KPI Pages
 import MetricCardPage from './pages/kpi/MetricCardPage';
@@ -106,6 +112,12 @@ export default function App() {
           <div className="app-content">
             <Routes>
               <Route path="/" element={<Overview />} />
+              <Route path="/dashboards/finance" element={<ExecutiveFinance />} />
+              <Route path="/dashboards/sales" element={<SalesPipeline />} />
+              <Route path="/dashboards/operations" element={<Operations />} />
+              <Route path="/dashboards/people" element={<PeopleHR />} />
+              <Route path="/dashboards/reconciliation" element={<Reconciliation />} />
+              <Route path="/dashboards/saas" element={<SaasGrowth />} />
 
               {/* KPI */}
               <Route path="/kpi/metric" element={<MetricCardPage />} />

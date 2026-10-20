@@ -1,7 +1,7 @@
 export interface ChartEntry {
   id: string;
   name: string;
-  category: 'kpi' | 'bi' | 'ds' | 'geo' | 'network' | 'ai' | 'flow' | 'infographics';
+  category: 'dashboards' | 'kpi' | 'bi' | 'ds' | 'geo' | 'network' | 'ai' | 'flow' | 'infographics';
   path: string;
   description: string;
   status: 'implemented' | 'planned';
@@ -15,6 +15,7 @@ export interface CategoryInfo {
 }
 
 export const categories: CategoryInfo[] = [
+  { id: 'dashboards', label: 'Dashboards', icon: '🧭', description: 'Complete use-case dashboards mixing many visual types' },
   { id: 'kpi', label: 'KPI Cards', icon: '📊', description: 'Key performance indicators and metric displays' },
   { id: 'bi', label: 'BI Charts', icon: '📈', description: 'Business intelligence and analytical charts' },
   { id: 'ds', label: 'Data Science', icon: '🔬', description: 'Statistical and data science visualizations' },
@@ -26,6 +27,13 @@ export const categories: CategoryInfo[] = [
 ];
 
 export const chartRegistry: ChartEntry[] = [
+  // Use-case dashboards
+  { id: 'dash-finance', name: 'Executive Finance', category: 'dashboards', path: '/dashboards/finance', description: 'P&L bridge, cash forecast, budget bullets', status: 'implemented' },
+  { id: 'dash-sales', name: 'Sales & Pipeline', category: 'dashboards', path: '/dashboards/sales', description: 'Funnel, Pareto, slope, heatmap, status strip', status: 'implemented' },
+  { id: 'dash-ops', name: 'Operations & Supply Chain', category: 'dashboards', path: '/dashboards/operations', description: 'Control chart, anomalies, rings, Sankey', status: 'implemented' },
+  { id: 'dash-hr', name: 'People & HR', category: 'dashboards', path: '/dashboards/people', description: 'Waffle, composition, dumbbell, radar, risk matrix', status: 'implemented' },
+  { id: 'dash-recon', name: 'Reconciliation & Controls', category: 'dashboards', path: '/dashboards/reconciliation', description: 'Two-source reconciliation storyboard', status: 'implemented' },
+  { id: 'dash-saas', name: 'SaaS Growth', category: 'dashboards', path: '/dashboards/saas', description: 'MRR movements, cohorts, positioning, AI cards', status: 'implemented' },
   // KPI Cards
   { id: 'metric', name: 'Metric Card', category: 'kpi', path: '/kpi/metric', description: 'Single KPI value with formatting', status: 'implemented' },
   { id: 'delta', name: 'Delta Card', category: 'kpi', path: '/kpi/delta', description: 'Value with change indicator (↑↓)', status: 'implemented' },

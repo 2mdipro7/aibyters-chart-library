@@ -4,7 +4,7 @@ import { PropsTable } from '../../components/PropsTable';
 import { HeatmapChart } from '@aibyters/charts-ds';
 
 const variables = ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'];
-const sampleData = [];
+const sampleData: { x: string; y: string; value: number }[] = [];
 for (let i = 0; i < variables.length; i++) {
   for (let j = 0; j < variables.length; j++) {
     let value;

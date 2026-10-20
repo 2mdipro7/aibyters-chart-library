@@ -9,6 +9,7 @@ interface ChartPageLayoutProps {
 }
 
 const categoryLabels: Record<string, { label: string; color: string }> = {
+  dashboards: { label: 'Dashboard', color: '#f59e0b' },
   kpi: { label: 'KPI', color: '#6366f1' },
   bi: { label: 'BI Chart', color: '#06b6d4' },
   ds: { label: 'Data Science', color: '#22c55e' },

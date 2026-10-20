@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "title": "Inventory & operations (example)",
+  "description": "Stock position, movement and open orders from Bin, Stock Ledger Entry and Sales Order.",
+  "columns": 4,
+  "filters": [{ "fieldname": "warehouse", "label": "Warehouse", "fieldtype": "Link", "options": "Warehouse" }],
+  "widgets": [
+    { "id": "stock_value", "type": "metric", "title": "Stock value", "format": "currency", "source": { "kind": "query", "doctype": "Bin", "measure": "stock_value", "aggregate": "sum" } },
+    { "id": "items_in_stock", "type": "metric", "title": "Items in stock", "format": "count", "source": { "kind": "query", "doctype": "Bin", "aggregate": "count", "filters": { "actual_qty": [">", 0] } } },
+    { "id": "open_so", "type": "metric", "title": "Open sales orders", "format": "count", "source": { "kind": "query", "doctype": "Sales Order", "aggregate": "count", "filters": { "docstatus": 1, "status": ["in", ["To Deliver and Bill", "To Deliver"]] } } },
+    { "id": "late_so", "type": "metric", "title": "Overdue deliveries", "format": "count", "source": { "kind": "query", "doctype": "Sales Order", "aggregate": "count", "filters": { "docstatus": 1, "delivery_status": "Not Delivered", "delivery_date": ["<", "Today"] } } },
+    { "id": "value_by_wh", "type": "treemap", "title": "Stock value by warehouse", "span": 2, "format": "currency", "encodings": { "nameKey": "dimension", "dataKey": "value" },
+      "source": { "kind": "query", "doctype": "Bin", "dimension": "warehouse", "measure": "stock_value", "aggregate": "sum", "order": "desc", "limit": 12 } },
+    { "id": "movement", "type": "line", "title": "Stock movement by month", "span": 2, "format": "number", "encodings": { "index": "dimension", "categories": ["value"], "seriesLabels": { "value": "Qty moved" } },
+      "source": { "kind": "query", "doctype": "Stock Ledger Entry", "dimension": "posting_date", "time_grain": "month", "measure": "actual_qty", "aggregate": "sum", "filters": { "is_cancelled": 0 } } },
+    { "id": "top_items", "type": "pareto", "title": "Stock value concentration by item", "span": 2, "format": "currency", "encodings": { "nameKey": "dimension", "dataKey": "value" },
+      "source": { "kind": "query", "doctype": "Bin", "dimension": "item_code", "measure": "stock_value", "aggregate": "sum", "order": "desc", "limit": 12 } },
+    { "id": "so_status", "type": "status_strip", "title": "Sales orders by status", "span": 2, "encodings": { "nameKey": "dimension", "status": "dimension", "count": "value" },
+      "source": { "kind": "query", "doctype": "Sales Order", "dimension": "status", "aggregate": "count", "filters": { "docstatus": 1 } } },
+    { "id": "reorder", "type": "diverging_bar", "title": "Stock vs reorder level", "span": 2, "format": "number", "encodings": { "nameKey": "item_code", "dataKey": "delta" },
+      "source": { "kind": "method", "method": "aibyters_charts.api.reorder_gap", "args": { "limit": 10 } } },
+    { "id": "low_stock", "type": "table", "title": "Low stock items", "span": 2, "format": "number", "drilldown": "/app/item/{item_code}",
+      "source": { "kind": "list", "doctype": "Bin", "fields": ["item_code", "warehouse", "actual_qty", "reserved_qty", "projected_qty"], "filters": { "projected_qty": ["<", 0] }, "order_by": "projected_qty asc", "limit": 20 } }
+  ]
+}

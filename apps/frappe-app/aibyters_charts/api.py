@@ -178,3 +178,48 @@ def validate_spec(spec):
         if src.get("kind") == "report" and src.get("name") and not frappe.db.exists("Report", src["name"]):
             errors.append(_("Report {0} not found (widget {1})").format(src["name"], wid))
     return {"ok": not errors, "errors": errors}
+
+
+@frappe.whitelist()
+def monthly_pair(a_doctype, b_doctype, measure, date_field="posting_date", months=6, filters=None):
+    """Two DocTypes summed per month side by side (e.g. Sales vs Purchase invoices)."""
+    for dt in (a_doctype, b_doctype):
+        frappe.has_permission(dt, "read", throw=True)
+        _check_field(dt, measure)
+        _check_field(dt, date_field)
+    months = int(months)
+    today = getdate(nowdate())
+    start = add_to_date(today.replace(day=1), months=-(months - 1))
+    base = dict(json.loads(filters) if isinstance(filters, str) else (filters or {}))
+    base.setdefault("docstatus", 1)
+
+    def by_month(dt):
+        rows = frappe.get_list(dt, fields=[f"`{date_field}` as d", f"`{measure}` as v"], filters={**base, date_field: [">=", start]}, limit_page_length=0)
+        out: dict[str, float] = {}
+        for r in rows:
+            if r.get("d"):
+                k = getdate(r["d"]).strftime("%Y-%m")
+                out[k] = out.get(k, 0) + (r["v"] or 0)
+        return out
+
+    a, b = by_month(a_doctype), by_month(b_doctype)
+    keys = []
+    cur = start
+    for _ in range(months):
+        keys.append(getdate(cur).strftime("%Y-%m"))
+        cur = add_to_date(cur, months=1)
+    return [{"month": k, "sales": a.get(k, 0), "purchases": b.get(k, 0)} for k in keys]
+
+
+@frappe.whitelist()
+def reorder_gap(limit=10):
+    """Projected qty minus reorder level per item (negative = below reorder level)."""
+    frappe.has_permission("Item Reorder", "read", throw=True)
+    frappe.has_permission("Bin", "read", throw=True)
+    reorders = frappe.get_list("Item Reorder", fields=["parent as item_code", "warehouse", "warehouse_reorder_level as level"], limit_page_length=0)
+    out = []
+    for r in reorders:
+        qty = frappe.db.get_value("Bin", {"item_code": r.item_code, "warehouse": r.warehouse}, "projected_qty") or 0
+        out.append({"item_code": r.item_code, "warehouse": r.warehouse, "delta": qty - (r.level or 0)})
+    out.sort(key=lambda x: x["delta"])
+    return out[: int(limit)]

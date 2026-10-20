@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "title": "People & HR (example)",
+  "description": "Headcount, hiring and leave from Employee, Job Applicant and Leave Application (requires the HRMS app).",
+  "columns": 4,
+  "widgets": [
+    { "id": "headcount", "type": "metric", "title": "Active employees", "format": "count", "source": { "kind": "query", "doctype": "Employee", "aggregate": "count", "filters": { "status": "Active" } } },
+    { "id": "left", "type": "metric", "title": "Left this year", "format": "count", "source": { "kind": "query", "doctype": "Employee", "aggregate": "count", "filters": { "status": "Left", "relieving_date": [">=", "2026-01-01"] } } },
+    { "id": "applicants", "type": "metric", "title": "Open applicants", "format": "count", "source": { "kind": "query", "doctype": "Job Applicant", "aggregate": "count", "filters": { "status": "Open" } } },
+    { "id": "leave_open", "type": "metric", "title": "Leave requests pending", "format": "count", "source": { "kind": "query", "doctype": "Leave Application", "aggregate": "count", "filters": { "status": "Open" } } },
+    { "id": "dept", "type": "waffle", "title": "Headcount by department", "span": 2, "format": "count", "encodings": { "nameKey": "dimension", "dataKey": "value" },
+      "source": { "kind": "query", "doctype": "Employee", "dimension": "department", "aggregate": "count", "filters": { "status": "Active" } } },
+    { "id": "emp_type", "type": "composition_band", "title": "Employment type mix", "span": 2, "format": "count", "encodings": { "nameKey": "dimension", "dataKey": "value" },
+      "source": { "kind": "query", "doctype": "Employee", "dimension": "employment_type", "aggregate": "count", "filters": { "status": "Active" } } },
+    { "id": "joins", "type": "column", "title": "Joiners by month", "span": 2, "format": "count", "encodings": { "index": "dimension", "categories": ["value"], "seriesLabels": { "value": "Joiners" } },
+      "source": { "kind": "query", "doctype": "Employee", "dimension": "date_of_joining", "time_grain": "month", "aggregate": "count", "limit": 12 } },
+    { "id": "leave_type", "type": "polar_area", "title": "Leave days by type", "span": 1, "format": "number", "encodings": { "nameKey": "dimension", "dataKey": "value" },
+      "source": { "kind": "query", "doctype": "Leave Application", "dimension": "leave_type", "measure": "total_leave_days", "aggregate": "sum", "filters": { "status": "Approved" } } },
+    { "id": "gender", "type": "donut", "title": "Gender", "span": 1, "format": "count", "encodings": { "nameKey": "dimension", "dataKey": "value" },
+      "source": { "kind": "query", "doctype": "Employee", "dimension": "gender", "aggregate": "count", "filters": { "status": "Active" } } },
+    { "id": "pipeline", "type": "funnel", "title": "Hiring pipeline", "span": 2, "format": "count", "encodings": { "nameKey": "dimension", "dataKey": "value" },
+      "source": { "kind": "query", "doctype": "Job Applicant", "dimension": "status", "aggregate": "count" } },
+    { "id": "branch", "type": "ranked_bar", "title": "Headcount by branch", "span": 2, "format": "count", "encodings": { "nameKey": "dimension", "dataKey": "value" },
+      "source": { "kind": "query", "doctype": "Employee", "dimension": "branch", "aggregate": "count", "order": "desc", "filters": { "status": "Active" } } }
+  ]
+}

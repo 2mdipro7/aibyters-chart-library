@@ -156,7 +156,7 @@ function PiePlot({ ctx, prepared, series, total, dataKey, nameKey, innerRadiusRa
       </svg>
       {center && (
         <div style={{ position: "absolute", left: cx, top: cy, transform: "translate(-50%, -50%)", textAlign: "center", pointerEvents: "none", maxWidth: innerR * 1.7, fontFamily: chartVars.fontBody }}>
-          {centerValue && <div style={{ fontSize: Math.max(14, Math.min(28, innerR / 2.2)), fontWeight: 700, color: chartVars.textPrimary, lineHeight: 1.1, fontVariantNumeric: "tabular-nums", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{centerValue}</div>}
+          {centerValue && <div style={{ fontSize: Math.max(12, Math.min(28, innerR / 2.2, (innerR * 1.7) / (String(centerValue).length * 0.62))), fontWeight: 700, color: chartVars.textPrimary, lineHeight: 1.1, fontVariantNumeric: "tabular-nums", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{centerValue}</div>}
           {centerLabel && <div style={{ fontSize: Math.max(10, Math.min(12, innerR / 5)), color: chartVars.textSecondary, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{centerLabel}</div>}
         </div>
       )}

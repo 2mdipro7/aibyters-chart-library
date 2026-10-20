@@ -87,11 +87,11 @@ function GaugePlot({ ctx, value, min = 0, max = 100, bands, thresholds, target, 
       })()}
       {t > 0 && <path d={arc(cx, cy, r, start, angle)} fill="none" stroke={activeColor} strokeWidth={stroke} strokeLinecap="round" style={ctx.animate ? { transition: "d 500ms ease" } : undefined} />}
       {tgt && <circle cx={tgt.x} cy={tgt.y} r={stroke / 2 + 2} fill="none" stroke={chartVars.textPrimary} strokeWidth={2}><title>Target {valueFormatter(target!)}</title></circle>}
-      <text x={cx} y={sweep === 180 ? cy - valueSize * 0.55 : cy - 4} textAnchor="middle" dominantBaseline="central" fontSize={valueSize} fontWeight={700} fill={chartVars.textPrimary} style={{ fontVariantNumeric: "tabular-nums" }}>
+      <text x={cx} y={sweep === 180 ? cy - (caption ? valueSize * 0.9 : valueSize * 0.5) : cy - 4} textAnchor="middle" dominantBaseline="central" fontSize={valueSize} fontWeight={700} fill={chartVars.textPrimary} style={{ fontVariantNumeric: "tabular-nums" }}>
         {valueFormatter(value)}
       </text>
       {caption && (
-        <text x={cx} y={sweep === 180 ? cy - 2 : cy + valueSize * 0.75} textAnchor="middle" dominantBaseline={sweep === 180 ? "auto" : "central"} fontSize={fs} fill={chartVars.textSecondary}>
+        <text x={cx} y={sweep === 180 ? cy - 4 : cy + valueSize * 0.75} textAnchor="middle" dominantBaseline={sweep === 180 ? "auto" : "central"} fontSize={fs} fill={chartVars.textSecondary}>
           {caption}
         </text>
       )}
