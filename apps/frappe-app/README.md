@@ -15,17 +15,9 @@ and wall displays.
 - **Permission-aware**: every data source runs as the logged-in user through `frappe.get_list`
   / `query_report.run`; no bypass.
 - **Export** CSV/XLSX per widget, print-friendly, reduced-motion aware, WCAG-minded.
-- **Licensing**: free tier (3 dashboards, 6 widgets each); paid plans unlock unlimited
-  dashboards, all chart packs and white-labelling (Frappe Cloud plan or licence key).
-
-## Install
-
-```bash
-bench get-app https://github.com/2mdipro7/aibyters-chart-library --branch main --subdir apps/frappe-app
-bench --site yoursite install-app aibyters_charts
-```
-
-On Frappe Cloud: install from the Marketplace and pick a plan.
+- **Plans**: the free tier includes 3 dashboards with 6 widgets each. Paid plans add unlimited
+  dashboards and widgets, white-labelling and priority support; on Frappe Cloud the plan is
+  detected automatically, elsewhere a licence key from AI Byters unlocks it.
 
 ## Quick start
 
@@ -53,7 +45,16 @@ On Frappe Cloud: install from the Marketplace and pick a plan.
 }
 ```
 
+## Links
+
+- Website: https://aibyters.com
+- Documentation: https://aibyters.com/charts/docs
+- Support: https://aibyters.com/charts/support
+- Privacy: https://aibyters.com/privacy
+- Terms: https://aibyters.com/terms
+
 ## License
 
-Proprietary. See `license.txt`. A licence key or Frappe Cloud Marketplace plan is required for
-the paid tier; the free tier needs no key.
+MIT — see `license.txt`. The React chart components are compiled into `public/dist` and
+distributed with this app under the same licence; the component source packages
+(`@aibyters/*`) are licensed separately for use in other platforms.
