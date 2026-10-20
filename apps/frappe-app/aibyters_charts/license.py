@@ -2,9 +2,9 @@
 
 Two paths are supported:
 
-1. **Frappe Cloud Marketplace plan** — when the site runs on Frappe Cloud with a paid plan for
-   this app, the plan name is read from the site config (``frappe.conf``) that Frappe Cloud
-   injects for marketplace subscriptions and is treated as authoritative.
+1. **Frappe Cloud Marketplace plan** — Frappe Cloud injects ``sk_aibyters_charts`` into site
+   config for Marketplace installs; the key is exchanged for the plan via Frappe Cloud's
+   ``get_subscription_info`` API (same pattern as frappe/hrms ``subscription_utils.py``).
 2. **Licence key** (self-hosted) — an Ed25519-signed JSON payload issued by AI Byters:
    ``{"licensee": "...", "plan": "pro", "sites": ["*"], "exp": "2027-01-01", "seats": 0}``.
    The public key is embedded below; the private key never leaves the vendor.
@@ -33,15 +33,48 @@ PLAN_LIMITS = {
 PUBLIC_KEY_B64 = "REPLACE_WITH_BASE64_ED25519_PUBLIC_KEY"
 
 
+FC_API = "https://frappecloud.com/api/method/press.api.developer.marketplace.get_subscription_info"
+
+
+def _on_frappe_cloud() -> bool:
+    try:
+        from frappe.utils.frappecloud import on_frappecloud
+
+        return bool(on_frappecloud())
+    except Exception:
+        return False
+
+
 def _frappe_cloud_plan() -> str | None:
-    """Plan injected by Frappe Cloud for marketplace subscriptions (see docs/frappe/MARKETPLACE.md)."""
-    conf = frappe.conf or {}
-    subs = conf.get("marketplace_app_plans") or conf.get("app_plans") or {}
-    if isinstance(subs, dict):
-        plan = subs.get("aibyters_charts")
-        if plan:
-            return str(plan).lower()
-    return None
+    """Plan of this site's Marketplace subscription.
+
+    Frappe Cloud injects ``sk_<app>`` (a per-subscription secret key) into site config when the
+    app is installed from the Marketplace (press: ``Site.install_marketplace_conf``). The plan name
+    itself is not stored locally; the app exchanges the key for ``{plan, enabled, site}`` via the
+    guest endpoint ``press.api.developer.marketplace.get_subscription_info``. The call is cached
+    for an hour and fails open (free tier) so a Frappe Cloud outage never breaks a dashboard.
+    """
+    key = (frappe.conf or {}).get("sk_aibyters_charts")
+    if not key:
+        return None
+    try:
+        import requests
+
+        res = requests.post(FC_API, json={"secret_key": key}, timeout=5)
+        if res.status_code != 200:
+            return None
+        info = (res.json() or {}).get("message") or {}
+        if not info.get("enabled", True):
+            return "free"
+        plan = str(info.get("plan") or "").strip().lower()
+        # Plan titles on Frappe Cloud are free text; normalise to our tiers.
+        for tier in ("enterprise", "pro", "starter"):
+            if tier in plan:
+                return tier
+        return "pro" if plan else None
+    except Exception:
+        frappe.log_error(title="aibyters_charts: Frappe Cloud subscription check failed")
+        return None
 
 
 def _verify_key(key: str) -> dict | None:
@@ -74,6 +107,9 @@ def get_license_state() -> dict:
     fc = _frappe_cloud_plan()
     if fc:
         state.update(plan=fc, source="frappe_cloud", limits=PLAN_LIMITS.get(fc, PLAN_LIMITS["pro"]))
+    elif _on_frappe_cloud() and not (frappe.conf or {}).get("sk_aibyters_charts"):
+        # Installed on Frappe Cloud without a Marketplace subscription key (e.g. bench get-app).
+        state.update(source="frappe_cloud_unsubscribed")
     else:
         key = frappe.db.get_single_value("AIB Settings", "license_key") if frappe.db.exists("DocType", "AIB Settings") else None
         if key:
