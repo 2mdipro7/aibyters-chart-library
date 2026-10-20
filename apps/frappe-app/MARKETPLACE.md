@@ -9,7 +9,7 @@ the long description **without installation instructions or links**, screenshots
 
 ```bash
 # 1. Build the Desk bundle (commits into aibyters_charts/public/dist)
-pnpm --filter aibyters-charts-frappe-bundle build
+pnpm --filter aibyters-charts-frappe-bundle build   # apps/frappe-bundle -> apps/frappe-app/.../public/dist
 
 # 2. Export the app to its own repository (history-preserving subtree split)
 node scripts/release-frappe-app.mjs --remote git@github.com:aibyters/aibyters_charts.git --branch main
@@ -53,4 +53,5 @@ and pro-rated on the customer's Frappe Cloud invoice. Payouts monthly (PayPal ou
 - [ ] No symlinks; no side-effects in `__init__.py`
 - [ ] Semgrep: no raw SQL from user input (all queries go through `frappe.get_list`), no `ignore_permissions` on user-reachable paths
 - [ ] Prebuilt assets committed (`public/dist`) and, for the v2 registry, published by the `app-assets` workflow
-- [ ] README has no install steps / deployment wording; five links present; screenshots uploaded
+- [ ] README has no install steps, deployment wording or http(s) links (the five links go in the listing form); screenshots uploaded
+- [ ] `apps/frappe-app` contains no `package.json` at its root (otherwise Frappe Cloud runs `yarn install`)

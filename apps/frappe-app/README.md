@@ -45,14 +45,6 @@ and wall displays.
 }
 ```
 
-## Links
-
-- Website: https://aibyters.com
-- Documentation: https://aibyters.com/charts/docs
-- Support: https://aibyters.com/charts/support
-- Privacy: https://aibyters.com/privacy
-- Terms: https://aibyters.com/terms
-
 ## License
 
 MIT — see `license.txt`. The React chart components are compiled into `public/dist` and

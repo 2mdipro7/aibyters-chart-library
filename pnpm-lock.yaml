@@ -81,32 +81,32 @@ importers:
         specifier: ^3.2.4
         version: 3.2.7(jsdom@26.1.0)
 
-  apps/frappe-app/frontend:
+  apps/frappe-bundle:
     dependencies:
       '@aibyters/adapters-frappe':
         specifier: workspace:*
-        version: link:../../../packages/adapters-frappe
+        version: link:../../packages/adapters-frappe
       '@aibyters/charts-bi':
         specifier: workspace:*
-        version: link:../../../packages/charts-bi
+        version: link:../../packages/charts-bi
       '@aibyters/charts-ds':
         specifier: workspace:*
-        version: link:../../../packages/charts-ds
+        version: link:../../packages/charts-ds
       '@aibyters/charts-kpi':
         specifier: workspace:*
-        version: link:../../../packages/charts-kpi
+        version: link:../../packages/charts-kpi
       '@aibyters/core':
         specifier: workspace:*
-        version: link:../../../packages/core
+        version: link:../../packages/core
       '@aibyters/layout':
         specifier: workspace:*
-        version: link:../../../packages/layout
+        version: link:../../packages/layout
       '@aibyters/spec':
         specifier: workspace:*
-        version: link:../../../packages/spec
+        version: link:../../packages/spec
       '@aibyters/theme':
         specifier: workspace:*
-        version: link:../../../packages/theme
+        version: link:../../packages/theme
       react:
         specifier: ^18.3.1
         version: 18.3.1

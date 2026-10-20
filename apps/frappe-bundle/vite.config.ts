@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
-const pkg = (name: string) => path.resolve(__dirname, `../../../packages/${name}/src/index.ts`);
+const pkg = (name: string) => path.resolve(__dirname, `../../packages/${name}/src/index.ts`);
 
 /**
  * Self-contained IIFE bundle for Frappe Desk. Desk has no React, so React, ReactDOM and Recharts
@@ -27,7 +27,7 @@ export default defineConfig({
     dedupe: ["react", "react-dom", "recharts"],
   },
   build: {
-    outDir: path.resolve(__dirname, "../aibyters_charts/public/dist"),
+    outDir: path.resolve(__dirname, "../frappe-app/aibyters_charts/public/dist"),
     emptyOutDir: true,
     sourcemap: false,
     minify: true,

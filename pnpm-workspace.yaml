@@ -1,7 +1,7 @@
 packages:
   - 'packages/*'
   - 'apps/*'
-  - 'apps/frappe-app/frontend'
+  - 'apps/frappe-bundle'
 allowBuilds:
   esbuild: true
   puppeteer: true

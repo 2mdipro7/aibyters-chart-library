@@ -7,7 +7,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "clean": "rimraf ../aibyters_charts/public/dist"
+    "clean": "rimraf ../frappe-app/aibyters_charts/public/dist"
   },
   "dependencies": {
     "@aibyters/adapters-frappe": "workspace:*",

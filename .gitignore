@@ -22,3 +22,6 @@ storybook-static
 
 # visual regression screenshots (scripts/visual-check.mjs)
 visual/
+
+# The Frappe app ships its prebuilt Desk bundle (Frappe Cloud must not need a Node build).
+!apps/frappe-app/aibyters_charts/public/dist/
