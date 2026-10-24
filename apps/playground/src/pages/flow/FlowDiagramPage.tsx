@@ -28,9 +28,9 @@ export default function FlowDiagramPage() {
   }, []);
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div>
+    <div className="flow-demo-page">
+      <div style={{ marginBottom: '24px', display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ flex: '1 1 200px', minWidth: 0 }}>
           <h1 style={{ fontSize: '24px', fontWeight: 700, fontFamily: "'Poppins', sans-serif", color: 'var(--vi-color-text-primary)', marginBottom: '8px' }}>
             Flow Diagram
           </h1>
@@ -51,7 +51,9 @@ export default function FlowDiagramPage() {
             cursor: 'pointer',
             color: '#10261A',
             fontWeight: 600,
-            fontSize: '14px'
+            fontSize: '14px',
+            flexShrink: 0,
+            maxWidth: '100%'
           }}
         >
           {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}

@@ -15,11 +15,11 @@ export function PropsTable({ data }: { data: PropDef[] }) {
       <table className="props-table">
         <thead>
           <tr>
-            <th>Prop</th>
-            <th>Type</th>
-            <th>Required</th>
-            <th>Default</th>
-            <th>Description</th>
+            <th scope="col" style={{ width: '18%' }}>Prop</th>
+            <th scope="col" style={{ width: '22%' }}>Type</th>
+            <th scope="col" style={{ width: '13%' }}>Required</th>
+            <th scope="col" style={{ width: '13%' }}>Default</th>
+            <th scope="col" style={{ width: '34%' }}>Description</th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +34,21 @@ export function PropsTable({ data }: { data: PropDef[] }) {
           ))}
         </tbody>
       </table>
+      <dl className="props-list">
+        {data.map(prop => (
+          <div className="props-list-item" key={prop.name}>
+            <dt><code className="prop-name">{prop.name}</code></dt>
+            <dd>
+              <p>{prop.description}</p>
+              <dl className="props-metadata">
+                <div><dt>Type</dt><dd><code className="prop-type">{prop.type}</code></dd></div>
+                <div><dt>Required</dt><dd>{prop.required ? 'Yes' : 'No'}</dd></div>
+                <div><dt>Default</dt><dd><code>{prop.default}</code></dd></div>
+              </dl>
+            </dd>
+          </div>
+        ))}
+      </dl>
     </div>
   );
 }

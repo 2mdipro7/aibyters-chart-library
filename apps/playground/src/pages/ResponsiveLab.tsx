@@ -34,9 +34,9 @@ const widths: Array<number | string> = [320, 480, 720, '100%'];
 
 function Column({ width }: { width: number | string }) {
   return (
-    <div style={{ flex: width === '100%' ? '1 1 320px' : 'none', width, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ flex: width === '100%' ? '1 1 100%' : 'none', width, maxWidth: '100%', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--vi-color-text-secondary, #64748b)', fontVariantNumeric: 'tabular-nums' }}>
-        {typeof width === 'number' ? `${width}px` : 'fluid (100%)'}
+        {typeof width === 'number' ? `${width}px maximum` : 'fluid (100%)'}
       </div>
       <RankedBarChart title="Unreconciled exposure" description="By mandate, USD" data={ranked} highlightTop={2} valueFormatter={(v) => '$' + v.toLocaleString()} />
       <DivergingBarChart title="Valuation differences" description="By asset class" data={diverging} negativeLabel="Portfolio system higher" positiveLabel="Custodian higher" />
@@ -53,11 +53,11 @@ export default function ResponsiveLab() {
         <span className="chart-page-badge" style={{ backgroundColor: '#06b6d420', color: '#06b6d4' }}>Lab</span>
         <h1 className="chart-page-title">Responsive Lab</h1>
         <p className="chart-page-description">
-          The same four charts rendered in 320px, 480px, 720px and fluid containers. Breakpoints are driven by the
+          The same four charts rendered in containers up to 320px, 480px, 720px and fluid width. Each fits the available space. Breakpoints are driven by the
           container width, so this page shows exactly what a phone, a narrow dashboard column and a wide card will get.
         </p>
       </div>
-      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', overflowX: 'auto', paddingBottom: 16 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'flex-start', paddingBottom: 16 }}>
         {widths.map((w) => (
           <Column key={String(w)} width={w} />
         ))}

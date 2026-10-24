@@ -28,6 +28,7 @@ body {
 
 .app-main {
   flex: 1;
+  min-width: 0;
   margin-left: var(--sidebar-width);
   display: flex;
   flex-direction: column;
@@ -50,6 +51,7 @@ body {
 
 .app-content {
   flex: 1;
+  min-width: 0;
   padding: 32px;
   max-width: 1200px;
   width: 100%;
@@ -301,6 +303,7 @@ body {
 }
 
 .chart-page-demo {
+  min-width: 0;
   background: var(--vi-color-surface-card);
   border: 1px solid var(--vi-color-surface-borderLight);
   border-radius: var(--radius);
@@ -317,8 +320,9 @@ body {
 }
 
 .code-block pre {
-  padding: 20px;
-  overflow-x: auto;
+  padding: 48px 20px 20px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   font-size: 13px;
   line-height: 1.7;
 }
@@ -351,10 +355,14 @@ body {
 /* ─── Props Table ─── */
 .props-table-container {
   margin-top: 8px;
+  min-width: 0;
+  container-type: inline-size;
 }
 
 .props-table {
   width: 100%;
+  table-layout: fixed;
+  overflow-wrap: break-word;
   border-collapse: collapse;
   font-size: 13px;
   background: var(--vi-color-surface-card);
@@ -365,7 +373,7 @@ body {
 
 .props-table th {
   text-align: left;
-  padding: 10px 16px;
+  padding: 10px 12px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -376,7 +384,7 @@ body {
 }
 
 .props-table td {
-  padding: 10px 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--vi-color-surface-borderLight);
   color: var(--vi-color-text-secondary);
 }
@@ -402,6 +410,34 @@ body {
   color: #f59e0b;
   font-weight: 600;
   font-size: 11px;
+}
+
+.props-list { display: none; }
+.props-table code { overflow-wrap: anywhere; }
+
+.flow-demo-page { padding: 24px; min-width: 0; }
+@media (max-width: 640px) {
+  .chart-page-demo { padding: 12px; }
+  .flow-demo-page { padding: 0; }
+}
+
+@container (max-width: 640px) {
+  .props-table { display: none; }
+  .props-list { display: grid; gap: 12px; overflow-wrap: anywhere; }
+  .props-list-item {
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--vi-color-surface-borderLight);
+    border-radius: var(--radius);
+    background: var(--vi-color-surface-card);
+  }
+  .props-list-item > dt { margin-bottom: 10px; }
+  .props-list .prop-name { padding: 0; background: none; }
+  .props-list dd { min-width: 0; font-size: 13px; line-height: 1.6; color: var(--vi-color-text-secondary); }
+  .props-list dd > p { margin-bottom: 12px; }
+  .props-metadata > div { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; margin-top: 6px; }
+  .props-metadata dt { color: var(--vi-color-text-tertiary); }
+  .props-metadata dd { margin: 0; }
 }
 
 /* ─── Overview ─── */
